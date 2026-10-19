@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BR Mania do Futuro — Projeto Transformação Vibra Energia. Diagnóstico, oportunidades, Salesforce, arquitetura e roadmap.">
+<meta name="robots" content="noindex, nofollow">
 <title>BR Mania — Projeto Futuro</title>
 <style>
   :root {
@@ -11,22 +13,22 @@
     --bg:        #0E1410;
     --surface:   #161C18;
     --surface-2: #1D2620;
-    --green:     #4A7C3F;   /* verde da logo */
-    --green-lt:  #6AAF5E;   /* verde mais claro para hover/acento */
+    --green:     #4A7C3F;
+    --green-lt:  #6AAF5E;
     --green-dim: rgba(74,124,63,0.14);
-    --gold:      #C8A84B;   /* amarelo-dourado da logo */
+    --gold:      #C8A84B;
     --gold-dim:  rgba(200,168,75,0.12);
-    --silver:    #9EA8A0;   /* cinza da logo */
+    --blue:      #8AABFF;
+    --blue-dim:  rgba(100,150,255,0.14);
+    --silver:    #9EA8A0;
     --white:     #EFF2EE;
-    --muted:     #687368;
+    --muted:     #7A857A;   /* levemente mais claro p/ contraste AA */
     --border:    #222C24;
-    /* Sidebar */
     --sidebar-w: 224px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
   body {
     background: var(--bg);
     color: var(--white);
@@ -36,806 +38,484 @@
     -webkit-font-smoothing: antialiased;
     display: flex;
   }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 2px; }
+  button { font: inherit; }
 
-  /* ════════════════════════════════
-     SIDEBAR
-  ════════════════════════════════ */
+  .skip-link {
+    position: absolute; left: -999px; top: 8px; z-index: 999;
+    background: var(--gold); color: #111; padding: 8px 14px; border-radius: 4px; font-weight: 700; font-size: 13px;
+  }
+  .skip-link:focus { left: 8px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; z-index: 400;
+    background: linear-gradient(90deg, var(--green-lt), var(--gold)); transition: width .08s linear; }
+
+  /* ════════ SIDEBAR ════════ */
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: var(--sidebar-w);
-    height: 100vh;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 200;
-    overflow-y: auto;
+    position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; z-index: 200; overflow-y: auto;
   }
+  .sidebar-brand { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo { display: flex; align-items: center; gap: 9px; }
+  .sidebar-logo-mark { width: 30px; height: 30px; background: var(--green); border-radius: 5px; display: grid; place-items: center; flex-shrink: 0; }
+  .sidebar-logo-text { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.1; color: var(--white); }
+  .sidebar-logo-text em { color: var(--gold); font-style: normal; }
 
-  .sidebar-brand {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 6px;
-  }
-  .sidebar-logo-mark {
-    width: 30px;
-    height: 30px;
-    background: var(--green);
-    border-radius: 5px;
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-  }
-  .sidebar-logo-text {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1.1;
-    color: var(--white);
-  }
-  .sidebar-logo-text em {
-    color: var(--gold);
-    font-style: normal;
-  }
-  .sidebar-tagline {
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.4;
-    font-style: italic;
-  }
-
-  .sidebar-nav {
-    padding: 16px 0;
-    flex: 1;
-  }
-  .sidebar-group {
-    margin-bottom: 8px;
-  }
-  .sidebar-group-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    padding: 6px 20px 4px;
-  }
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+  .sidebar-group { margin-bottom: 8px; }
+  .sidebar-group-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; padding: 6px 20px 4px; }
   .sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--silver);
-    text-decoration: none;
-    border-left: 2px solid transparent;
-    transition: color 0.12s, border-color 0.12s, background 0.12s;
-    cursor: pointer;
+    display: flex; align-items: center; gap: 10px; padding: 8px 20px;
+    font-size: 13px; font-weight: 500; color: var(--silver); text-decoration: none;
+    border-left: 2px solid transparent; transition: color .12s, border-color .12s, background .12s;
   }
-  .sidebar-link:hover {
-    color: var(--white);
-    background: var(--surface-2);
-  }
-  .sidebar-link.active {
-    color: var(--white);
-    border-left-color: var(--green-lt);
-    background: var(--green-dim);
-  }
-  .sidebar-link-icon {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    opacity: 0.7;
-  }
+  .sidebar-link:hover { color: var(--white); background: var(--surface-2); }
+  .sidebar-link.active { color: var(--white); border-left-color: var(--green-lt); background: var(--green-dim); }
+  .sidebar-link-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: .7; }
   .sidebar-link.active .sidebar-link-icon { opacity: 1; }
+  .sidebar-link-num { margin-left: auto; font-size: 10px; color: var(--muted); font-weight: 700; }
 
-  .sidebar-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-  }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
   .sidebar-badge {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--gold);
-    background: var(--gold-dim);
-    border: 1px solid rgba(200,168,75,0.25);
-    padding: 4px 10px;
-    border-radius: 20px;
-    width: fit-content;
+    font-size: 11px; font-weight: 600; color: var(--gold); background: var(--gold-dim);
+    border: 1px solid rgba(200,168,75,0.25); padding: 4px 10px; border-radius: 20px; width: fit-content;
   }
+  .sidebar-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--silver);
+    font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 4px; cursor: pointer; text-align: left;
+    transition: border-color .12s, color .12s;
+  }
+  .sidebar-btn:hover { border-color: var(--muted); color: var(--white); }
 
-  /* Mobile sidebar toggle */
   .sidebar-toggle {
-    display: none;
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    z-index: 300;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    width: 36px;
-    height: 36px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--white);
-    font-size: 16px;
+    display: none; position: fixed; top: 8px; left: 12px; z-index: 300;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    width: 36px; height: 36px; align-items: center; justify-content: center; cursor: pointer; color: var(--white); font-size: 16px;
   }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 150; }
+  .sidebar-overlay.show { display: block; }
 
-  /* ════════════════════════════════
-     MAIN CONTENT
-  ════════════════════════════════ */
-  .main {
-    margin-left: var(--sidebar-w);
-    flex: 1;
-    min-width: 0;
-  }
+  /* ════════ MAIN ════════ */
+  .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
 
-  /* ── TOP NAV ── */
   .topnav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(14,20,16,0.92);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 48px;
-    height: 52px;
-    gap: 16px;
+    position: sticky; top: 0; z-index: 100; background: rgba(14,20,16,0.92); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 52px; gap: 16px;
   }
-  .topnav-item {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-  }
+  .topnav-current { font-size: 12px; font-weight: 700; color: var(--green-lt); letter-spacing: .06em; text-transform: uppercase; }
+  .topnav-right { display: flex; align-items: center; gap: 16px; }
+  .topnav-item { font-size: 12px; font-weight: 500; color: var(--muted); }
   .topnav-item strong { color: var(--silver); font-weight: 600; }
+  .topnav-sep { color: var(--border); }
+  .conf-pill { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--gold); border: 1px solid rgba(200,168,75,.3); padding: 2px 8px; border-radius: 3px; }
 
   /* ── HERO ── */
-  .hero {
-    padding: 80px 48px 72px;
-    max-width: 960px;
-    position: relative;
-    overflow: hidden;
-  }
+  .hero { padding: 80px 48px 72px; max-width: 1040px; position: relative; overflow: hidden; }
   .hero::before {
-    content: '';
-    position: absolute;
-    top: -80px;
-    right: -120px;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(74,124,63,0.1) 0%, transparent 65%);
-    pointer-events: none;
+    content: ''; position: absolute; top: -80px; right: -120px; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(74,124,63,0.12) 0%, transparent 65%); pointer-events: none;
   }
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
+  .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
   .hero-eyebrow-line { width: 28px; height: 2px; background: var(--green-lt); }
-  .hero-eyebrow-text {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-  .hero-title {
-    font-size: clamp(44px, 6vw, 80px);
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
+  .hero-eyebrow-text { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.1em; }
+  .hero-title { font-size: clamp(44px, 6vw, 80px); font-weight: 900; line-height: .95; letter-spacing: -0.03em; margin-bottom: 6px; }
   .hero-title .accent { color: var(--green-lt); }
-  .hero-subtitle {
-    font-size: clamp(44px, 6vw, 80px);
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    color: var(--muted);
-    margin-bottom: 44px;
-  }
-  .hero-meta {
-    display: flex;
-    align-items: flex-start;
-    gap: 48px;
-    flex-wrap: wrap;
-  }
+  .hero-subtitle { font-size: clamp(44px, 6vw, 80px); font-weight: 900; line-height: .95; letter-spacing: -0.03em; color: var(--muted); margin-bottom: 44px; }
+  .hero-meta { display: flex; align-items: flex-start; gap: 48px; flex-wrap: wrap; }
   .hero-stat { display: flex; flex-direction: column; gap: 4px; }
-  .hero-stat-num {
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--gold);
-    letter-spacing: -0.02em;
-    line-height: 1;
+  .hero-stat-num { font-size: 28px; font-weight: 900; color: var(--gold); letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .hero-stat-label { font-size: 12px; color: var(--muted); max-width: 140px; line-height: 1.4; }
+  .hero-desc { max-width: 380px; font-size: 14px; color: rgba(239,242,238,.65); line-height: 1.7; border-left: 2px solid var(--border); padding-left: 18px; }
+
+  .hero-summary {
+    margin-top: 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+    background: var(--border); border: 1px solid var(--border);
   }
-  .hero-stat-label {
-    font-size: 12px;
-    color: var(--muted);
-    max-width: 130px;
-    line-height: 1.4;
-  }
-  .hero-desc {
-    max-width: 380px;
-    font-size: 14px;
-    color: rgba(239,242,238,0.65);
-    line-height: 1.7;
-    border-left: 2px solid var(--border);
-    padding-left: 18px;
-  }
+  .hs-item { background: var(--bg); padding: 18px; text-decoration: none; color: inherit; transition: background .15s; display: flex; flex-direction: column; gap: 4px; }
+  .hs-item:hover { background: var(--surface); }
+  .hs-num { font-size: 10px; font-weight: 700; color: var(--green-lt); letter-spacing: .1em; }
+  .hs-title { font-size: 13px; font-weight: 700; }
+  .hs-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
   /* ── SECTION BASE ── */
-  .section {
-    max-width: 960px;
-    padding: 64px 48px;
-    border-top: 1px solid var(--border);
+  .section { max-width: 1040px; padding: 64px 48px; border-top: 1px solid var(--border); }
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 36px; }
+  .section-num { font-size: 11px; font-weight: 700; color: var(--green-lt); letter-spacing: .1em; min-width: 22px; }
+  .section-title { font-size: 24px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; }
+  .section-subtitle { font-size: 14px; color: var(--muted); margin-top: 4px; font-weight: 400; }
+  .section-lead { font-size: 14px; color: rgba(239,242,238,.7); line-height: 1.7; max-width: 680px; margin-bottom: 28px; }
+
+  /* ── FILTERS ── */
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+  .chip {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+    background: transparent; border: 1px solid var(--border); color: var(--silver); transition: all .12s;
   }
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 36px;
-  }
-  .section-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--green-lt);
-    letter-spacing: 0.1em;
-    min-width: 22px;
-  }
-  .section-title {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    line-height: 1.1;
-  }
-  .section-subtitle {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 4px;
-    font-weight: 400;
-  }
+  .chip:hover { border-color: var(--muted); color: var(--white); }
+  .chip[aria-pressed="true"] { background: var(--green-dim); border-color: var(--green-lt); color: var(--white); }
+  .chip .chip-count { color: var(--muted); margin-left: 4px; }
 
   /* ── DORES ── */
   .dores-cats { display: flex; flex-direction: column; gap: 28px; }
-
-  .dor-cat { }
-  .dor-cat-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 2px;
-  }
-  .dor-cat-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    padding: 3px 10px;
-    border-radius: 3px;
-  }
-  .dor-cat-label.tech  { background: rgba(74,124,63,0.18);  color: var(--green-lt); }
-  .dor-cat-label.biz   { background: rgba(200,168,75,0.12); color: var(--gold); }
-  .dor-cat-label.data  { background: rgba(100,150,255,0.12);color: #8AABFF; }
-  .dor-cat-label.fin   { background: rgba(158,168,160,0.12);color: var(--silver); }
-  .dor-cat-rule {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  .dor-cat-count {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
+  .dor-cat[hidden] { display: none; }
+  .dor-cat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .dor-cat-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 3px 10px; border-radius: 3px; }
+  .dor-cat-label.tech { background: rgba(74,124,63,.18); color: var(--green-lt); }
+  .dor-cat-label.biz  { background: var(--gold-dim); color: var(--gold); }
+  .dor-cat-label.data { background: var(--blue-dim); color: var(--blue); }
+  .dor-cat-label.exec { background: var(--green); color: #fff; }
+  .dor-cat-label.acc  { border: 1px solid rgba(138,171,255,.45); color: var(--blue); }
+  .dor-cat-label.fin  { background: rgba(158,168,160,.12); color: var(--silver); }
+  .dor-cat-rule { flex: 1; height: 1px; background: var(--border); }
+  .dor-cat-count { font-size: 11px; color: var(--muted); font-weight: 500; }
   .dor-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 2px;
-    background: var(--border);
-    border: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px;
+    background: var(--border); border: 1px solid var(--border);
   }
-  .dor-item {
-    background: var(--bg);
-    padding: 20px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    transition: background 0.15s;
-  }
+  .dor-item { background: var(--bg); padding: 20px 18px; display: flex; flex-direction: column; gap: 6px; transition: background .15s; }
   .dor-item:hover { background: var(--surface); }
-  .dor-title { font-size: 13px; font-weight: 700; color: var(--white); line-height: 1.3; }
-  .dor-body  { font-size: 12px; color: var(--muted); line-height: 1.6; }
-
-  /* ── SALESFORCE MAP ── */
-  .sf-intro {
-    font-size: 14px;
-    color: rgba(239,242,238,0.7);
-    line-height: 1.7;
-    max-width: 640px;
-    margin-bottom: 32px;
+  .dor-title { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .dor-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .dor-link {
+    margin-top: auto; padding-top: 8px; font-size: 11px; font-weight: 700; color: var(--green-lt);
+    background: none; border: none; cursor: pointer; text-align: left; letter-spacing: .02em; display: inline-flex; gap: 6px; align-items: center;
   }
-  .sf-tabs {
-    display: flex;
-    gap: 2px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-bottom: 2px;
-  }
-  .sf-tab {
-    flex: 1;
-    padding: 14px 18px;
-    background: var(--bg);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-    cursor: pointer;
-    border: none;
-    text-align: left;
-    letter-spacing: 0.02em;
-    transition: background 0.12s, color 0.12s;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .sf-tab:hover { background: var(--surface); color: var(--silver); }
-  .sf-tab.active { background: var(--surface-2); color: var(--white); }
-  .sf-tab-name { font-size: 14px; font-weight: 900; letter-spacing: -0.01em; }
-  .sf-tab-role { font-size: 11px; font-weight: 500; color: var(--muted); }
-  .sf-tab.active .sf-tab-role { color: var(--silver); }
-  .sf-tab-bar {
-    height: 3px;
-    border-radius: 2px;
-    margin-top: 6px;
-  }
-  .sf-tab:nth-child(1) .sf-tab-bar { background: #8AABFF; }
-  .sf-tab:nth-child(2) .sf-tab-bar { background: var(--gold); }
-  .sf-tab:nth-child(3) .sf-tab-bar { background: var(--green-lt); }
-  .sf-tab:not(.active) .sf-tab-bar { opacity: 0.3; }
-
-  .sf-panel {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 32px 28px;
-  }
-  .sf-panel.active { display: block; }
-
-  .sf-panel-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    margin-bottom: 28px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-  }
-  .sf-panel-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    display: grid;
-    place-items: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .sf-panel-icon.blue  { background: rgba(100,150,255,0.15); }
-  .sf-panel-icon.gold  { background: var(--gold-dim); }
-  .sf-panel-icon.green { background: var(--green-dim); }
-  .sf-panel-title {
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    line-height: 1.1;
-  }
-  .sf-panel-desc {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 4px;
-    line-height: 1.5;
-    max-width: 480px;
-  }
-
-  .sf-matrix {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .sf-row {
-    display: grid;
-    grid-template-columns: 1fr 24px 1fr;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    padding: 16px 0;
-    align-items: center;
-  }
-  .sf-row:last-child { border-bottom: 1px solid var(--border); }
-  .sf-pain {
-    font-size: 13px;
-    color: rgba(239,242,238,0.6);
-    line-height: 1.5;
-    padding-right: 16px;
-  }
-  .sf-pain strong { color: var(--white); font-weight: 600; display: block; margin-bottom: 2px; font-size: 14px; }
-  .sf-arrow {
-    display: flex;
-    justify-content: center;
-    color: var(--border);
-    font-size: 14px;
-  }
-  .sf-solution {
-    padding-left: 16px;
-  }
-  .sf-feature {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 3px;
-  }
-  .sf-feature-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .sf-feature-tag {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 2px 7px;
-    border-radius: 3px;
-    margin-top: 5px;
-  }
-  .sf-feature-tag.blue  { background: rgba(100,150,255,0.15); color: #8AABFF; }
-  .sf-feature-tag.gold  { background: var(--gold-dim); color: var(--gold); }
-  .sf-feature-tag.green { background: var(--green-dim); color: var(--green-lt); }
+  .dor-link:hover { color: var(--gold); }
+  .dor-link .sol { color: var(--muted); font-weight: 600; }
 
   /* ── OPORTUNIDADES ── */
-  .oport-list { display: flex; flex-direction: column; gap: 0; }
+  .oport-list { display: flex; flex-direction: column; }
   .oport-row {
-    display: grid;
-    grid-template-columns: 180px 1fr 140px;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    padding: 20px 0;
-    align-items: start;
+    display: grid; grid-template-columns: 180px 1fr 140px; border-top: 1px solid var(--border); padding: 20px 0; align-items: start;
   }
+  .oport-row[hidden] { display: none; }
   .oport-row:last-child { border-bottom: 1px solid var(--border); }
-  .oport-area {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    padding-right: 20px;
-    letter-spacing: 0.02em;
-    padding-top: 2px;
-  }
-  .oport-body {
-    font-size: 14px;
-    color: var(--white);
-    line-height: 1.6;
-    padding-right: 40px;
-  }
+  .oport-area { font-size: 11px; font-weight: 600; color: var(--muted); padding-right: 20px; letter-spacing: .02em; padding-top: 2px; }
+  .oport-body { font-size: 14px; line-height: 1.6; padding-right: 40px; }
   .oport-body strong { color: var(--gold); font-weight: 600; }
-  .oport-impact {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    justify-content: flex-end;
-    padding-top: 2px;
-  }
+  .oport-plat { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .oport-impact { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; justify-content: flex-end; padding-top: 2px; }
   .impact-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .impact-high  { background: var(--green-lt); }
-  .impact-med   { background: var(--gold); }
+  .impact-high { background: var(--green-lt); }
+  .impact-med { background: var(--gold); }
   .impact-label { color: var(--muted); }
+
+  /* ── TAGS ── */
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 3px; }
+  .tag.blue  { background: var(--blue-dim); color: var(--blue); }
+  .tag.gold  { background: var(--gold-dim); color: var(--gold); }
+  .tag.green { background: var(--green-dim); color: var(--green-lt); }
+  .tag.gray  { background: rgba(158,168,160,.1); color: var(--silver); }
+
+  /* ── SALESFORCE ── */
+  .sf-coverage {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); margin-bottom: 28px;
+  }
+  .sf-cov { background: var(--bg); padding: 16px 18px; }
+  .sf-cov-num { font-size: 24px; font-weight: 900; color: var(--gold); line-height: 1; letter-spacing: -.02em; }
+  .sf-cov-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .sf-tabs { display: flex; gap: 2px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2px; }
+  .sf-tab {
+    flex: 1; padding: 14px 18px; background: var(--bg); color: var(--muted); cursor: pointer; border: none; text-align: left;
+    transition: background .12s, color .12s; display: flex; flex-direction: column; gap: 3px;
+  }
+  .sf-tab:hover { background: var(--surface); color: var(--silver); }
+  .sf-tab[aria-selected="true"] { background: var(--surface-2); color: var(--white); }
+  .sf-tab-name { font-size: 14px; font-weight: 900; letter-spacing: -.01em; }
+  .sf-tab-role { font-size: 11px; font-weight: 500; color: var(--muted); }
+  .sf-tab[aria-selected="true"] .sf-tab-role { color: var(--silver); }
+  .sf-tab-bar { height: 3px; border-radius: 2px; margin-top: 6px; }
+  .sf-tab.c-blue .sf-tab-bar { background: var(--blue); }
+  .sf-tab.c-gold .sf-tab-bar { background: var(--gold); }
+  .sf-tab.c-green .sf-tab-bar { background: var(--green-lt); }
+  .sf-tab.c-silver .sf-tab-bar { background: var(--silver); }
+  .sf-tab-core { font-size: 9px; font-weight: 800; letter-spacing: .1em; color: #111; background: var(--green-lt); padding: 1px 6px; border-radius: 2px; margin-left: 6px; vertical-align: middle; }
+  .sf-panel-icon.silver { background: rgba(158,168,160,.12); }
+
+  /* ── SISTEMAS ── */
+  .sys-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); margin-bottom: 20px; }
+  .sys-sum { background: var(--bg); padding: 14px 16px; cursor: pointer; border: none; text-align: left; color: inherit; transition: background .12s; }
+  .sys-sum:hover { background: var(--surface); }
+  .sys-sum[aria-pressed="true"] { background: var(--surface-2); box-shadow: inset 0 -2px 0 var(--green-lt); }
+  .sys-sum-num { font-size: 22px; font-weight: 900; line-height: 1; }
+  .sys-sum-label { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; letter-spacing: .04em; }
+  .sys-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sys-table th { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-align: left; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); }
+  .sys-table td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .sys-table tr[hidden] { display: none; }
+  .sys-table tbody tr { transition: background .12s; }
+  .sys-table tbody tr:hover { background: var(--surface); }
+  .sys-name { font-weight: 700; white-space: nowrap; }
+  .sys-use { color: var(--muted); font-size: 12px; }
+  .sys-dest { font-weight: 600; }
+  .sys-dest small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .act { font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 3px 8px; border-radius: 3px; white-space: nowrap; }
+  .act.sub { background: var(--green-dim); color: var(--green-lt); }
+  .act.con { background: var(--blue-dim); color: var(--blue); }
+  .act.int { background: var(--gold-dim); color: var(--gold); }
+  .act.man { background: rgba(158,168,160,.12); color: var(--silver); }
+  .sys-extra { margin-top: 24px; }
+  .sys-extra-title { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .1em; margin-bottom: 10px; }
+  .sys-extra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); }
+  .sys-extra-item { background: var(--bg); padding: 14px 16px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .sys-extra-item strong { display: block; color: var(--white); font-size: 13px; margin-bottom: 4px; }
+  .sys-extra-item em { font-style: normal; color: var(--gold); font-weight: 600; }
+  .callout { margin-top: 20px; padding: 12px 16px; background: var(--gold-dim); border-left: 3px solid var(--gold); font-size: 13px; color: rgba(239,242,238,.85); line-height: 1.6; }
+  .callout strong { color: var(--gold); }
+  .new-badge { font-size: 9px; font-weight: 800; letter-spacing: .08em; color: var(--gold); border: 1px solid rgba(200,168,75,.35); padding: 0 5px; border-radius: 2px; margin-left: 6px; vertical-align: middle; }
+  .sf-tab:not([aria-selected="true"]) .sf-tab-bar { opacity: .3; }
+
+  .sf-panel { background: var(--surface); border: 1px solid var(--border); padding: 32px 28px; }
+  .sf-panel[hidden] { display: none; }
+  .sf-panel-header { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .sf-panel-icon { width: 44px; height: 44px; border-radius: 8px; display: grid; place-items: center; font-size: 20px; flex-shrink: 0; }
+  .sf-panel-icon.blue { background: var(--blue-dim); }
+  .sf-panel-icon.gold { background: var(--gold-dim); }
+  .sf-panel-icon.green { background: var(--green-dim); }
+  .sf-panel-title { font-size: 20px; font-weight: 900; letter-spacing: -.02em; line-height: 1.1; }
+  .sf-panel-desc { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.5; max-width: 520px; }
+
+  .sf-cols { display: grid; grid-template-columns: 1fr 24px 1fr; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .1em; padding-bottom: 8px; }
+  .sf-cols span:last-child { padding-left: 16px; }
+  .sf-row { display: grid; grid-template-columns: 1fr 24px 1fr; border-top: 1px solid var(--border); padding: 16px 0; align-items: center; transition: background .3s; }
+  .sf-row:last-child { border-bottom: 1px solid var(--border); }
+  .sf-row.flash { background: var(--gold-dim); }
+  .sf-pain { font-size: 13px; color: rgba(239,242,238,.6); line-height: 1.5; padding-right: 16px; }
+  .sf-pain strong { color: var(--white); font-weight: 600; display: block; margin-bottom: 2px; font-size: 14px; }
+  .sf-arrow { display: flex; justify-content: center; color: var(--muted); font-size: 14px; }
+  .sf-solution { padding-left: 16px; }
+  .sf-feature { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .sf-feature-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .sf-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
 
   /* ── VISÃO 360 ── */
   .v360 {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 32px 36px;
-    display: grid;
-    grid-template-columns: 1fr 256px;
-    gap: 40px;
-    align-items: start;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 32px 36px;
+    display: grid; grid-template-columns: 1fr 280px; gap: 40px; align-items: start;
   }
-  .v360-title {
-    font-size: 19px;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    margin-bottom: 12px;
-    line-height: 1.1;
-  }
-  .v360-body {
-    font-size: 13px;
-    color: rgba(239,242,238,0.65);
-    line-height: 1.7;
-    margin-bottom: 18px;
-  }
+  .v360-title { font-size: 19px; font-weight: 900; letter-spacing: -.02em; margin-bottom: 12px; line-height: 1.1; }
+  .v360-body { font-size: 13px; color: rgba(239,242,238,.65); line-height: 1.7; margin-bottom: 18px; }
   .v360-signals { display: flex; flex-direction: column; gap: 7px; }
   .v360-signal { display: flex; gap: 9px; align-items: center; font-size: 12px; }
-  .signal-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .signal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .v360-diagram { display: flex; flex-direction: column; gap: 6px; }
   .v360-flow-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 10px 14px;
-    font-size: 12px;
-    color: rgba(239,242,238,0.6);
-    position: relative;
-    transition: border-color 0.12s, color 0.12s;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: 10px 14px; font-size: 12px;
+    color: rgba(239,242,238,.6); position: relative; transition: border-color .12s, color .12s; cursor: pointer; text-align: left; width: 100%;
   }
   .v360-flow-item:hover { border-color: var(--muted); color: var(--white); }
-  .v360-flow-item.active {
-    border-color: var(--green-lt);
-    color: var(--white);
-  }
+  .v360-flow-item.active, .v360-flow-item.edge { border-color: var(--green-lt); color: var(--white); }
   .v360-flow-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--green-lt);
-    border-radius: 3px 0 0 3px;
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--green-lt); border-radius: 3px 0 0 3px;
   }
-  .v360-flow-arrow {
-    display: flex;
-    justify-content: center;
-    color: var(--border);
-    font-size: 11px;
-    line-height: 1;
+  .v360-flow-arrow { display: flex; justify-content: center; color: var(--muted); font-size: 11px; line-height: 1; }
+  .v360-flow-label { font-size: 9px; font-weight: 700; color: var(--green-lt); letter-spacing: .08em; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }
+  .v360-detail {
+    margin-top: 10px; font-size: 12px; color: rgba(239,242,238,.75); line-height: 1.6; background: var(--bg);
+    border: 1px dashed var(--border); border-radius: 3px; padding: 10px 12px; min-height: 64px;
   }
-  .v360-flow-label {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--green-lt);
-    letter-spacing: 0.08em;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+  .v360-detail strong { color: var(--gold); }
+
+  /* Simulador */
+  .sim { margin-top: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 28px 36px; }
+  .sim-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .sim-title { font-size: 15px; font-weight: 900; letter-spacing: -.01em; }
+  .sim-note { font-size: 11px; color: var(--muted); }
+  .sim-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: end; }
+  .sim-field label { display: block; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .08em; margin-bottom: 6px; }
+  .sim-field input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--white); border-radius: 3px;
+    padding: 8px 10px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;
   }
+  .sim-field input:focus { border-color: var(--green-lt); outline: none; }
+  .sim-out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); margin-top: 18px; }
+  .sim-out > div { background: var(--bg); padding: 14px 16px; }
+  .sim-out-num { font-size: 22px; font-weight: 900; color: var(--gold); line-height: 1; font-variant-numeric: tabular-nums; }
+  .sim-out-num.green { color: var(--green-lt); }
+  .sim-out-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
   /* ── ARQUITETURA ── */
-  .arch-diagram {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 32px 36px;
-  }
-  .arch-layers { display: flex; flex-direction: column; gap: 0; }
-  .arch-layer {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 20px;
-    align-items: center;
-  }
-  .arch-layer-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--muted);
-    text-align: right;
-    letter-spacing: 0.04em;
-  }
-  .arch-layer-content {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .arch-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 32px 36px; }
+  .arch-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; font-size: 11px; color: var(--muted); }
+  .arch-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .arch-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .arch-layer { display: grid; grid-template-columns: 110px 1fr; gap: 20px; align-items: center; }
+  .arch-layer-label { font-size: 10px; font-weight: 700; color: var(--muted); text-align: right; letter-spacing: .04em; text-transform: uppercase; }
+  .arch-layer-content { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .arch-layer:last-child .arch-layer-content { border-bottom: none; }
-  .arch-chip {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 3px;
-    letter-spacing: 0.01em;
-  }
-  .arch-chip.crm     { background: rgba(100,150,255,0.14); color: #8AABFF; border: 1px solid rgba(100,150,255,0.2); }
-  .arch-chip.data    { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(200,168,75,0.2); }
-  .arch-chip.ops     { background: rgba(158,168,160,0.1); color: var(--silver); border: 1px solid rgba(158,168,160,0.2); }
-  .arch-chip.new     { background: var(--green-dim); color: var(--green-lt); border: 1px solid rgba(74,124,63,0.3); }
-  .arch-chip.neutral { background: var(--surface-2); color: rgba(239,242,238,0.4); border: 1px solid var(--border); }
-  .arch-chip.hl      { background: var(--green); color: white; border: 1px solid var(--green); }
-  .arch-connector-line {
-    width: 1px;
-    height: 20px;
-    background: var(--border);
-    margin-left: 110px;
-  }
-  .arch-note {
-    margin-top: 20px;
-    padding: 12px 16px;
-    background: var(--green-dim);
-    border-left: 3px solid var(--green-lt);
-    font-size: 13px;
-    color: rgba(239,242,238,0.8);
-    line-height: 1.6;
-  }
+  .arch-chip { font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 3px; letter-spacing: .01em; cursor: default; transition: transform .12s; }
+  .arch-chip:hover { transform: translateY(-1px); }
+  .arch-chip.crm { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(100,150,255,.2); }
+  .arch-chip.data { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(200,168,75,.2); }
+  .arch-chip.ops { background: rgba(158,168,160,.1); color: var(--silver); border: 1px solid rgba(158,168,160,.2); }
+  .arch-chip.new { background: var(--green-dim); color: var(--green-lt); border: 1px solid rgba(74,124,63,.3); }
+  .arch-chip.neutral { background: var(--surface-2); color: rgba(239,242,238,.45); border: 1px dashed var(--border); }
+  .arch-chip.hl { background: var(--green); color: white; border: 1px solid var(--green); }
+  .arch-note { margin-top: 20px; padding: 12px 16px; background: var(--green-dim); border-left: 3px solid var(--green-lt); font-size: 13px; color: rgba(239,242,238,.8); line-height: 1.6; }
   .arch-note strong { color: var(--green-lt); }
 
   /* ── ROADMAP ── */
-  .roadmap {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-  .roadmap-phase { background: var(--bg); padding: 24px 20px; }
-  .roadmap-phase-header {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 20px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--border);
-  }
-  .roadmap-phase-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; }
-  .roadmap-phase-title { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; }
+  .timeline { display: grid; grid-template-columns: 1fr 2fr 1.2fr; gap: 2px; margin-bottom: 2px; }
+  .tl-bar { height: 6px; border-radius: 3px; }
+  .tl-bar.p1 { background: var(--green-lt); }
+  .tl-bar.p2 { background: var(--gold); }
+  .tl-bar.p3 { background: linear-gradient(90deg, var(--silver), transparent); }
+  .tl-labels { display: grid; grid-template-columns: 1fr 2fr 1.2fr; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .06em; margin-bottom: 18px; margin-top: 6px; }
+  .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); }
+  .roadmap-phase { background: var(--bg); padding: 24px 20px; display: flex; flex-direction: column; }
+  .roadmap-phase-header { display: flex; flex-direction: column; gap: 5px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .roadmap-phase-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
+  .roadmap-phase-title { font-size: 18px; font-weight: 900; letter-spacing: -.02em; line-height: 1.1; }
   .roadmap-phase-title.p1 { color: var(--green-lt); }
   .roadmap-phase-title.p2 { color: var(--gold); }
   .roadmap-phase-title.p3 { color: var(--silver); }
-  .roadmap-phase-period  { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .roadmap-phase-period { font-size: 11px; color: var(--muted); font-weight: 500; }
   .roadmap-items { display: flex; flex-direction: column; gap: 9px; list-style: none; }
-  .roadmap-item {
-    display: flex;
-    gap: 9px;
-    align-items: flex-start;
-    font-size: 12px;
-    color: rgba(239,242,238,0.75);
-    line-height: 1.5;
-  }
-  .roadmap-item::before {
-    content: '';
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--border);
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
+  .roadmap-item { display: flex; gap: 9px; align-items: flex-start; font-size: 12px; color: rgba(239,242,238,.75); line-height: 1.5; }
+  .roadmap-item::before { content: ''; width: 4px; height: 4px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
   .roadmap-phase:nth-child(1) .roadmap-item::before { background: var(--green-lt); }
   .roadmap-phase:nth-child(2) .roadmap-item::before { background: var(--gold); }
   .roadmap-phase:nth-child(3) .roadmap-item::before { background: var(--silver); }
+  .roadmap-exit { margin-top: auto; padding-top: 18px; }
+  .roadmap-exit-box { border-top: 1px solid var(--border); padding-top: 14px; font-size: 12px; color: var(--white); line-height: 1.5; }
+  .roadmap-exit-box span { display: block; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .08em; margin-bottom: 4px; }
+  .roadmap-dep { margin-top: 14px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .roadmap-dep strong { color: var(--silver); }
 
-  /* ── PRÓXIMAS AÇÕES ── */
-  .actions-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
+  /* ── PRÓXIMOS PASSOS ── */
+  .actions-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 12px; color: var(--muted); }
+  .ap-track { flex: 1; max-width: 240px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .ap-fill { height: 100%; width: 0; background: var(--green-lt); transition: width .25s; }
+  .actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .action-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: border-color 0.15s;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px;
+    display: flex; flex-direction: column; gap: 10px; transition: border-color .15s, opacity .2s;
   }
   .action-card:hover { border-color: var(--muted); }
-  .action-card.primary {
-    background: var(--green-dim);
-    border-color: rgba(74,124,63,0.35);
-    grid-column: span 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-    align-items: start;
-  }
-  .action-card.primary:hover { border-color: rgba(106,175,94,0.45); }
+  .action-card.primary { background: var(--green-dim); border-color: rgba(74,124,63,.35); grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .action-card.primary:hover { border-color: rgba(106,175,94,.45); }
+  .action-sub { display: flex; flex-direction: column; gap: 10px; }
   .action-header { display: flex; align-items: center; gap: 9px; }
-  .action-icon {
-    width: 30px; height: 30px;
-    border-radius: 3px;
-    display: grid;
-    place-items: center;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
+  .action-icon { width: 30px; height: 30px; border-radius: 3px; display: grid; place-items: center; font-size: 14px; flex-shrink: 0; }
   .action-icon.green { background: var(--green-dim); }
-  .action-icon.gold  { background: var(--gold-dim); }
-  .action-icon.blue  { background: rgba(100,150,255,0.12); }
-  .action-title { font-size: 14px; font-weight: 700; color: var(--white); }
-  .action-body  { font-size: 12px; color: var(--muted); line-height: 1.6; }
-  .action-meta  {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    margin-top: auto;
-    padding-top: 4px;
-  }
+  .action-icon.gold { background: var(--gold-dim); }
+  .action-icon.blue { background: var(--blue-dim); }
+  .action-title { font-size: 14px; font-weight: 700; flex: 1; }
+  .action-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .action-agenda { list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: rgba(239,242,238,.7); }
+  .action-agenda li::before { content: '→ '; color: var(--green-lt); }
+  .action-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 4px; }
+  .action-meta { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .05em; }
+  .action-check { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); cursor: pointer; user-select: none; }
+  .action-check input { accent-color: var(--green-lt); width: 14px; height: 14px; cursor: pointer; }
+  .is-done .action-title { text-decoration: line-through; color: var(--muted); }
+  .is-done { opacity: .6; }
 
   /* ── FOOTER ── */
-  .site-footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 48px;
-    max-width: 960px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+  .site-footer { border-top: 1px solid var(--border); padding: 28px 48px; max-width: 1040px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   .footer-text { font-size: 11px; color: var(--muted); }
   .footer-text span { color: var(--green-lt); }
   .footer-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .footer-tag {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 3px;
+  .footer-tag { font-size: 10px; font-weight: 500; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 2px 8px; border-radius: 3px; }
+
+  .back-top {
+    position: fixed; right: 20px; bottom: 20px; width: 38px; height: 38px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border); color: var(--white); cursor: pointer;
+    opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 120; font-size: 14px;
   }
+  .back-top.show { opacity: 1; pointer-events: auto; }
+  .back-top:hover { border-color: var(--green-lt); }
 
   /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .hero-eyebrow { animation: fadeUp 0.4s ease both; }
-  .hero-title   { animation: fadeUp 0.5s 0.06s ease both; }
-  .hero-subtitle{ animation: fadeUp 0.5s 0.12s ease both; }
-  .hero-meta    { animation: fadeUp 0.5s 0.2s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-eyebrow { animation: fadeUp .4s ease both; }
+  .hero-title { animation: fadeUp .5s .06s ease both; }
+  .hero-subtitle { animation: fadeUp .5s .12s ease both; }
+  .hero-meta { animation: fadeUp .5s .2s ease both; }
+  .hero-summary { animation: fadeUp .5s .28s ease both; }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) {
-    .hero-eyebrow, .hero-title, .hero-subtitle, .hero-meta { animation: none; }
+    html { scroll-behavior: auto; }
+    .hero-eyebrow, .hero-title, .hero-subtitle, .hero-meta, .hero-summary { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
   }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     :root { --sidebar-w: 0px; }
-    .sidebar { transform: translateX(-224px); width: 224px; transition: transform 0.2s; }
+    .sidebar { transform: translateX(-224px); width: 224px; transition: transform .2s; }
     .sidebar.open { transform: translateX(0); }
     .sidebar-toggle { display: flex; }
     .main { margin-left: 0; }
     .hero, .section { padding-left: 20px; padding-right: 20px; }
     .topnav { padding: 0 20px 0 60px; }
-    .oport-row { grid-template-columns: 1fr; }
+    .topnav-right .topnav-item, .topnav-sep { display: none; }
+    .hero-summary { grid-template-columns: 1fr 1fr; }
+    .oport-row { grid-template-columns: 1fr; gap: 6px; }
+    .oport-body { padding-right: 0; }
     .oport-impact { justify-content: flex-start; }
-    .roadmap { grid-template-columns: 1fr; }
+    .roadmap, .timeline, .tl-labels { grid-template-columns: 1fr; }
+    .timeline, .tl-labels { display: none; }
     .actions-grid { grid-template-columns: 1fr; }
     .action-card.primary { grid-column: span 1; grid-template-columns: 1fr; }
-    .v360 { grid-template-columns: 1fr; }
+    .v360 { grid-template-columns: 1fr; padding: 24px 20px; }
+    .sim { padding: 24px 20px; }
+    .sim-grid { grid-template-columns: 1fr 1fr; }
+    .sim-out { grid-template-columns: 1fr; }
     .sf-tabs { flex-direction: column; }
+    .sf-coverage { grid-template-columns: 1fr; }
+    .sys-summary, .sys-extra-grid { grid-template-columns: 1fr 1fr; }
+    .sys-table thead { display: none; }
+    .sys-table, .sys-table tbody, .sys-table tr, .sys-table td { display: block; width: 100%; }
+    .sys-table tr { border-bottom: 1px solid var(--border); padding: 10px 0; }
+    .sys-table td { border: none; padding: 3px 0; }
+    .action-card[style] { grid-column: span 1 !important; }
+    .sf-row, .sf-cols { grid-template-columns: 1fr; gap: 8px; }
+    .sf-cols { display: none; }
+    .sf-arrow { justify-content: flex-start; transform: rotate(90deg); width: 14px; }
+    .sf-solution { padding-left: 0; }
+    .arch-diagram { padding: 24px 20px; }
+    .arch-layer { grid-template-columns: 1fr; gap: 4px; }
+    .arch-layer-label { text-align: left; padding-top: 10px; }
     .site-footer { padding: 20px; }
+  }
+
+  /* ── PRINT / PDF ── */
+  @media print {
+    :root { --bg: #fff; --surface: #fafafa; --surface-2: #f2f2f2; --white: #111; --muted: #555; --silver: #333; --border: #ddd; }
+    body { display: block; background: #fff; }
+    .sidebar, .sidebar-toggle, .topnav, .progress, .back-top, .filters, .sys-summary, .sf-tabs, .dor-link, .sim, .action-check, .skip-link { display: none !important; }
+    .main { margin: 0; }
+    .sf-panel[hidden] { display: block !important; }
+    .sf-panel { break-inside: avoid; margin-bottom: 12px; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .section { break-inside: avoid-page; padding: 28px 0; }
+    .hero { padding: 20px 0 32px; }
+    .hero::before { display: none; }
+    .dor-cat[hidden], .oport-row[hidden] { display: block !important; }
+    .sys-table tr[hidden] { display: table-row !important; }
   }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR TOGGLE (mobile) -->
-<button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menu">☰</button>
+<a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <!-- SIDEBAR -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar" aria-label="Navegação">
   <div class="sidebar-brand">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-mark">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M4 14L9 5L14 14H4Z" fill="white" fill-opacity="0.95"/>
-        </svg>
+      <div class="sidebar-logo-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 14L9 5L14 14H4Z" fill="white" fill-opacity="0.95"/></svg>
       </div>
       <div class="sidebar-logo-text">BR <em>Mania</em><br>do Futuro</div>
     </div>
@@ -844,69 +524,78 @@
   <nav class="sidebar-nav">
     <div class="sidebar-group">
       <div class="sidebar-group-label">CONTEXTO</div>
-      <a href="#hero" class="sidebar-link active" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2.5 5 5.5.8-4 3.9.9 5.5L8 13.5l-4.9 2.7.9-5.5L0 6.8l5.5-.8L8 1z"/></svg>
+      <a href="#hero" class="sidebar-link active">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l2.5 5 5.5.8-4 3.9.9 5.5L8 13.5l-4.9 2.7.9-5.5L0 6.8l5.5-.8L8 1z"/></svg>
         Visão Geral
       </a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">DIAGNÓSTICO</div>
-      <a href="#dores" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3zm-.5 2v4.5l3.5 2-.7 1.2-4.3-2.5V5h1.5z"/></svg>
-        Travas de crescimento
+      <a href="#dores" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3zm-.5 2v4.5l3.5 2-.7 1.2-4.3-2.5V5h1.5z"/></svg>
+        Travas de crescimento <span class="sidebar-link-num">01</span>
       </a>
-      <a href="#oportunidades" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M11 2H5L2 7l6 7 6-7-3-5zm0 2l2 3H3l2-3h6z"/></svg>
-        Oportunidades
+      <a href="#oportunidades" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 2H5L2 7l6 7 6-7-3-5zm0 2l2 3H3l2-3h6z"/></svg>
+        Oportunidades <span class="sidebar-link-num">02</span>
       </a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">SALESFORCE</div>
-      <a href="#salesforce" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M6 1a5 5 0 014.9 6.1L14 9l-3 3-1.5-1.5A5 5 0 116 1zm0 2a3 3 0 100 6 3 3 0 000-6z"/></svg>
-        Como o Salesforce ajuda
+      <a href="#salesforce" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6 1a5 5 0 014.9 6.1L14 9l-3 3-1.5-1.5A5 5 0 116 1zm0 2a3 3 0 100 6 3 3 0 000-6z"/></svg>
+        Como o Salesforce ajuda <span class="sidebar-link-num">03</span>
+      </a>
+      <a href="#sistemas" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 2h12v3H2V2zm0 4.5h12v3H2v-3zM2 11h12v3H2v-3z"/></svg>
+        Sistemas atuais <span class="sidebar-link-num">04</span>
       </a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">ESTRATÉGIA</div>
-      <a href="#visao360" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3C4.5 3 1.5 5.5 1.5 8S4.5 13 8 13s6.5-2.5 6.5-5S11.5 3 8 3zm0 2a3 3 0 110 6A3 3 0 018 5zm0 1.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>
-        Visão 360 do posto
+      <a href="#visao360" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 3C4.5 3 1.5 5.5 1.5 8S4.5 13 8 13s6.5-2.5 6.5-5S11.5 3 8 3zm0 2a3 3 0 110 6A3 3 0 018 5zm0 1.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/></svg>
+        Visão 360 do posto <span class="sidebar-link-num">05</span>
       </a>
-      <a href="#arquitetura" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h5v5H2V2zm7 0h5v5H9V2zM2 9h5v5H2V9zm7 0h5v5H9V9z"/></svg>
-        Arquitetura
+      <a href="#arquitetura" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 2h5v5H2V2zm7 0h5v5H9V2zM2 9h5v5H2V9zm7 0h5v5H9V9z"/></svg>
+        Arquitetura <span class="sidebar-link-num">06</span>
       </a>
-      <a href="#roadmap" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h14v2H1V3zm2 4h10v2H3V7zm2 4h6v2H5v-2z"/></svg>
-        Roadmap
+      <a href="#roadmap" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M1 3h14v2H1V3zm2 4h10v2H3V7zm2 4h6v2H5v-2z"/></svg>
+        Roadmap <span class="sidebar-link-num">07</span>
       </a>
-      <a href="#proximos-passos" class="sidebar-link" onclick="setActive(this)">
-        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4.5L8 13l-5-2.5V6l5-2.8z"/></svg>
-        Próximos passos
+      <a href="#proximos-passos" class="sidebar-link">
+        <svg class="sidebar-link-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4.5L8 13l-5-2.5V6l5-2.8z"/></svg>
+        Próximos passos <span class="sidebar-link-num">08</span>
       </a>
     </div>
   </nav>
 
   <div class="sidebar-footer">
-    <div class="sidebar-badge">Discovery · 01 Out 2026</div>
+    <div class="sidebar-badge">Discovery · 01 &amp; 15 Out 2026</div>
+    <button class="sidebar-btn" onclick="window.print()">⎙ Exportar PDF</button>
   </div>
 </aside>
 
 <!-- MAIN -->
 <div class="main">
 
-  <!-- TOP NAV -->
-  <div class="topnav">
-    <span class="topnav-item">Vibra Energia</span>
-    <span class="topnav-item" style="color:var(--border)">|</span>
-    <span class="topnav-item"><strong>Projeto Transformação</strong></span>
-    <span class="topnav-item" style="color:var(--border)">|</span>
-    <span class="topnav-item">Confidencial</span>
-  </div>
+  <header class="topnav">
+    <span class="topnav-current" id="topnavCurrent">Visão Geral</span>
+    <div class="topnav-right">
+      <span class="topnav-item">Vibra Energia</span>
+      <span class="topnav-sep">|</span>
+      <span class="topnav-item"><strong>Projeto Transformação</strong></span>
+      <span class="topnav-sep">|</span>
+      <span class="conf-pill">CONFIDENCIAL</span>
+    </div>
+  </header>
+
+  <main id="conteudo">
 
   <!-- HERO -->
-  <div class="hero" id="hero">
+  <section class="hero" id="hero" data-title="Visão Geral">
     <div class="hero-eyebrow">
       <div class="hero-eyebrow-line"></div>
       <span class="hero-eyebrow-text">VIBRA ENERGIA · PROJETO TRANSFORMAÇÃO</span>
@@ -915,7 +604,7 @@
     <p class="hero-subtitle">Conveniência que<br>escala além do posto.</p>
     <div class="hero-meta">
       <div class="hero-stat">
-        <div class="hero-stat-num">380</div>
+        <div class="hero-stat-num" data-count="380">380</div>
         <div class="hero-stat-label">contratos que vencem por ano sem ação proativa</div>
       </div>
       <div class="hero-stat">
@@ -926,596 +615,909 @@
         <div class="hero-stat-num">ZBRM</div>
         <div class="hero-stat-label">lojas fora do posto — bloqueadas pela arquitetura atual</div>
       </div>
-      <div class="hero-desc">
-        A BR Mania precisa se tornar uma operação independente, escalável e orientada por dados — mantendo as sinergias com o ecossistema Vibra/Premmia.
+      <div class="hero-stat">
+        <div class="hero-stat-num" data-count="12">12</div>
+        <div class="hero-stat-label">sistemas em uso hoje — todos com destino na plataforma</div>
       </div>
+      <p class="hero-desc">A BR Mania precisa se tornar uma operação independente, escalável e orientada por dados — mantendo as sinergias com o ecossistema Vibra/Premmia, e pronta para uma possível JV futura.</p>
     </div>
-  </div>
 
-  <!-- DORES -->
-  <section class="section" id="dores">
-    <div class="section-header">
+    <nav class="hero-summary" aria-label="Resumo executivo">
+      <a class="hs-item" href="#dores"><span class="hs-num">PROBLEMA</span><span class="hs-title">24 travas em 6 frentes</span><span class="hs-body">Arquitetura acoplada ao SAP do posto, execução terceirizada, acesso fragmentado, contratos sem gestão.</span></a>
+      <a class="hs-item" href="#salesforce"><span class="hs-num">RESPOSTA</span><span class="hs-title">CG Cloud no centro</span><span class="hs-body">CG Cloud na execução, Sales Cloud no relacionamento, Data 360 nos dados, Experience &amp; MuleSoft no acesso.</span></a>
+      <a class="hs-item" href="#sistemas"><span class="hs-num">CONSOLIDAÇÃO</span><span class="hs-title">12 sistemas + planilhas → 1 plataforma</span><span class="hs-body">6 substituídos, 2 consolidados, 3 integrados, 2 evoluídos.</span></a>
+      <a class="hs-item" href="#roadmap"><span class="hs-num">CAMINHO</span><span class="hs-title">3 fases até 2027+</span><span class="hs-body">Fundação → Inteligência → Escala ZBRM.</span></a>
+    </nav>
+  </section>
+
+  <!-- 01 TRAVAS -->
+  <section class="section" id="dores" data-title="Travas de crescimento">
+    <div class="section-header reveal">
       <span class="section-num">01</span>
       <div>
         <h2 class="section-title">Travas de crescimento</h2>
         <p class="section-subtitle">O que o discovery revelou como bloqueadores da operação</p>
       </div>
     </div>
+
+    <div class="filters reveal" role="group" aria-label="Filtrar travas por frente">
+      <button class="chip" aria-pressed="true" data-filter="all">Todas <span class="chip-count">24</span></button>
+      <button class="chip" aria-pressed="false" data-filter="tech">Arquitetura &amp; Tecnologia <span class="chip-count">5</span></button>
+      <button class="chip" aria-pressed="false" data-filter="data">Dados &amp; Inteligência <span class="chip-count">4</span></button>
+      <button class="chip" aria-pressed="false" data-filter="exec">Execução no PDV &amp; Trade <span class="chip-count">5</span></button>
+      <button class="chip" aria-pressed="false" data-filter="biz">Relacionamento &amp; Contratos <span class="chip-count">4</span></button>
+      <button class="chip" aria-pressed="false" data-filter="acc">Acesso &amp; Compras B2B <span class="chip-count">4</span></button>
+      <button class="chip" aria-pressed="false" data-filter="fin">Financeiro &amp; Compliance <span class="chip-count">2</span></button>
+    </div>
+    <p class="section-lead reveal" style="margin-bottom:24px">Consolidado dos discoveries de <strong>01/Out</strong> (negócio) e <strong>15/Out</strong> (detalhamento técnico das ferramentas). Itens marcados <span class="new-badge">15/OUT</span> vieram da segunda sessão.</p>
+
     <div class="dores-cats">
-
-      <!-- ARQUITETURA & TECNOLOGIA -->
-      <div class="dor-cat">
-        <div class="dor-cat-header">
-          <span class="dor-cat-label tech">Arquitetura & Tecnologia</span>
-          <div class="dor-cat-rule"></div>
-          <span class="dor-cat-count">3 travas</span>
-        </div>
+      <div class="dor-cat reveal" data-cat="tech">
+        <div class="dor-cat-header"><span class="dor-cat-label tech">Arquitetura &amp; Tecnologia</span><div class="dor-cat-rule"></div><span class="dor-cat-count">5 travas</span></div>
         <div class="dor-grid">
-          <div class="dor-item">
-            <div class="dor-title">Toda PCR exige um código SAP de posto</div>
-            <div class="dor-body">Proposta comercial só existe vinculada a um posto. Lojas independentes (corporate, aeroporto, shopping) não têm onde existir na arquitetura atual — o modelo ZBRM é inviável hoje.</div>
-          </div>
-          <div class="dor-item">
-            <div class="dor-title">ERP independente, mas arquitetura ainda acoplada</div>
-            <div class="dor-body">A BR Mania tem seu próprio ERP, mas a arquitetura de dados não garante independência real. Escalar novos modelos de negócio exige desacoplamento estrutural do ecossistema SAP Vibra.</div>
-          </div>
-          <div class="dor-item">
-            <div class="dor-title">Expansão de loja própria sem estrutura</div>
-            <div class="dor-body">Além das franquias, a operação de loja própria precisa crescer. Os formatos corporate, aeroporto e shopping exigem um modelo de negócio e uma entidade no sistema que hoje não existem.</div>
-          </div>
+          <div class="dor-item"><div class="dor-title">Toda PCR exige um código SAP de posto</div><div class="dor-body">Proposta comercial só existe vinculada a um posto. Lojas independentes (corporate, aeroporto, shopping) não têm onde existir na arquitetura atual — o modelo ZBRM é inviável hoje.</div><button class="dor-link" data-goto="sales" data-row="sf-pcr">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">ERP independente, mas arquitetura ainda acoplada</div><div class="dor-body">A BR Mania tem seu próprio ERP, mas a arquitetura de dados não garante independência real. Uma possível JV futura exige desacoplamento estrutural do ecossistema SAP Vibra — sem perder sinergias.</div><button class="dor-link" data-goto="data" data-row="sf-erp">Ver solução → <span class="sol">Data 360 + MuleSoft</span></button></div>
+          <div class="dor-item"><div class="dor-title">Expansão de loja própria sem estrutura</div><div class="dor-body">Além das franquias, a operação de loja própria precisa crescer. Os formatos corporate, aeroporto e shopping exigem um modelo de negócio e uma entidade no sistema que hoje não existem.</div><button class="dor-link" data-goto="sales" data-row="sf-pcr">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Integração de revendedores em lote 24h, com contornos <span class="new-badge">15/OUT</span></div><div class="dor-body">A integração busca revendedores criados nas últimas 24h e lê um campo da Account para saber se o posto tem BR Mania. Sem esse vínculo, entram "gambiarras" — como a loja do prédio da Vibra.</div><button class="dor-link" data-goto="data" data-row="sf-24h">Ver solução → <span class="sol">Data 360</span></button></div>
+          <div class="dor-item"><div class="dor-title">12 software houses de PDV, cupom fiscal sem tempo real <span class="new-badge">15/OUT</span></div><div class="dor-body">O sell-out chega por 12 fornecedores de PDV diferentes. O ideal é receber os cupons fiscais em near real time — base de pedido sugerido, campanhas e índice pista–loja.</div><button class="dor-link" data-goto="cg" data-row="sf-cupom">Ver solução → <span class="sol">CG Cloud + Data 360</span></button></div>
         </div>
       </div>
 
-      <!-- DADOS & INTELIGÊNCIA -->
-      <div class="dor-cat">
-        <div class="dor-cat-header">
-          <span class="dor-cat-label data">Dados & Inteligência</span>
-          <div class="dor-cat-rule"></div>
-          <span class="dor-cat-count">3 travas</span>
-        </div>
+      <div class="dor-cat reveal" data-cat="data">
+        <div class="dor-cat-header"><span class="dor-cat-label data">Dados &amp; Inteligência</span><div class="dor-cat-rule"></div><span class="dor-cat-count">4 travas</span></div>
         <div class="dor-grid">
-          <div class="dor-item">
-            <div class="dor-title">Relatórios estáticos, sem recomendação de ação</div>
-            <div class="dor-body">Olham para o passado e não sugerem próximos passos. Não distinguem formatos de operação — um posto de estrada recebe o mesmo relatório de um ZBRM em shopping.</div>
-          </div>
-          <div class="dor-item">
-            <div class="dor-title">Índice pista–loja não é mensurado</div>
-            <div class="dor-body">Não sabemos quantos clientes que abastecem entram na loja. É o KPI central do "momento de consumo" BR Mania — e não existe em nenhum sistema hoje.</div>
-          </div>
-          <div class="dor-item">
-            <div class="dor-title">Sem campanhas regionais ou por posto</div>
-            <div class="dor-body">Impossível criar uma ação localizada — como uma campanha de cuca nos postos do RS. A rede opera de forma homogênea, sem personalização geográfica ou por perfil de loja.</div>
-          </div>
+          <div class="dor-item"><div class="dor-title">Relatórios estáticos, sem recomendação de ação</div><div class="dor-body">Olham para o passado e não sugerem próximos passos. Não distinguem formatos de operação — e não dão base para decidir sobre um marketplace no futuro.</div><button class="dor-link" data-goto="data" data-row="sf-rel">Ver solução → <span class="sol">Data 360</span></button></div>
+          <div class="dor-item"><div class="dor-title">Índice pista–loja não é mensurado</div><div class="dor-body">Não sabemos quantos clientes que abastecem entram na loja. É o KPI central do "momento de consumo" BR Mania — e não existe em nenhum sistema hoje.</div><button class="dor-link" data-goto="data" data-row="sf-idx">Ver solução → <span class="sol">Data 360</span></button></div>
+          <div class="dor-item"><div class="dor-title">Premmia enxerga o posto, não a BR Mania <span class="new-badge">15/OUT</span></div><div class="dor-body">O posto funciona bem como oferta dedicada, mas a jornada Premmia mal identifica se o posto está ativo — e não existe visão de consumidor BR Mania para cross-selling.</div><button class="dor-link" data-goto="data" data-row="sf-prem">Ver solução → <span class="sol">Data 360</span></button></div>
+          <div class="dor-item"><div class="dor-title">Indicadores espalhados em 5+ ferramentas <span class="new-badge">15/OUT</span></div><div class="dor-body">Performance, inadimplência e logística no PowerBI; contratos e galonagem no Tableau; metas no Mereo; o resto em Excel e PPT. Não existe uma versão única da verdade.</div><button class="dor-link" data-goto="data" data-row="sf-dados">Ver solução → <span class="sol">Data 360 + Tableau</span></button></div>
         </div>
       </div>
 
-      <!-- RELACIONAMENTO & CONTRATOS -->
-      <div class="dor-cat">
-        <div class="dor-cat-header">
-          <span class="dor-cat-label biz">Relacionamento & Contratos</span>
-          <div class="dor-cat-rule"></div>
-          <span class="dor-cat-count">2 travas</span>
-        </div>
+      <div class="dor-cat reveal" data-cat="exec">
+        <div class="dor-cat-header"><span class="dor-cat-label exec">Execução no PDV &amp; Trade</span><div class="dor-cat-rule"></div><span class="dor-cat-count">5 travas · núcleo CG Cloud</span></div>
         <div class="dor-grid">
-          <div class="dor-item">
-            <div class="dor-title">380 contratos vencem por ano sem notificação</div>
-            <div class="dor-body">Nenhuma ação proativa de renovação. No último ano de contrato, nenhum fluxo de fidelização é acionado — o franqueado chega ao vencimento sem que a Vibra tenha agido.</div>
-          </div>
-          <div class="dor-item">
-            <div class="dor-title">Inauguração de loja sem processo estruturado</div>
-            <div class="dor-body">Não existe checklist, enxoval ou fluxo de abertura padronizado. Cada inauguração reinventa o processo do zero — sem rastreabilidade, sem aprendizado acumulado.</div>
-          </div>
+          <div class="dor-item"><div class="dor-title">Sem campanhas regionais ou por posto</div><div class="dor-body">Impossível criar uma ação localizada — como uma campanha de cuca nos postos do RS. A rede opera de forma homogênea, sem personalização geográfica ou por perfil de loja.</div><button class="dor-link" data-goto="cg" data-row="sf-camp">Ver solução → <span class="sol">CG Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Franquia presa ao plano de marketing do posto <span class="new-badge">15/OUT</span></div><div class="dor-body">Uma franquia não entra nas promoções do Acelera+ se o posto não tiver o plano de mkt. A loja depende de uma decisão que não é dela.</div><button class="dor-link" data-goto="cg" data-row="sf-acel">Ver solução → <span class="sol">CG Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Execução auditada por terceiros, não medida pela rede <span class="new-badge">15/OUT</span></div><div class="dor-body">Uma auditoria contratada avalia material promocional e gôndola (Portal da Vidi); visitas de consultoria rodam no Checklist Fácil. Os resultados chegam depois e não geram ação.</div><button class="dor-link" data-goto="cg" data-row="sf-audit">Ver solução → <span class="sol">CG Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Trade marketing sem preço praticado nem rebate <span class="new-badge">15/OUT</span></div><div class="dor-body">O trade não acessa os preços praticados na ponta e não acompanha a venda de parceiros para gerir rebates.</div><button class="dor-link" data-goto="cg" data-row="sf-preco">Ver solução → <span class="sol">CG Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Planograma isolado num portal separado <span class="new-badge">15/OUT</span></div><div class="dor-body">O planograma fica no GEMP, sem ligação com a visita, o sortimento ou o sell-out — não há como saber se ele é seguido.</div><button class="dor-link" data-goto="cg" data-row="sf-plano">Ver solução → <span class="sol">CG Cloud</span></button></div>
         </div>
       </div>
 
-      <!-- FINANCEIRO & COMPLIANCE -->
-      <div class="dor-cat">
-        <div class="dor-cat-header">
-          <span class="dor-cat-label fin">Financeiro & Compliance</span>
-          <div class="dor-cat-rule"></div>
-          <span class="dor-cat-count">2 travas</span>
-        </div>
+      <div class="dor-cat reveal" data-cat="biz">
+        <div class="dor-cat-header"><span class="dor-cat-label biz">Relacionamento &amp; Contratos</span><div class="dor-cat-rule"></div><span class="dor-cat-count">4 travas</span></div>
         <div class="dor-grid">
-          <div class="dor-item">
-            <div class="dor-title">Segmento financeiro ZBRM não existe</div>
-            <div class="dor-body">O modelo de crédito, cobrança e condições comerciais foi desenhado para revendedor de posto. Franqueados de loja fora do posto não têm um segmento financeiro adequado para operar.</div>
-          </div>
-          <div class="dor-item">
-            <div class="dor-title">Split de pagamento não preparado para a reforma tributária</div>
-            <div class="dor-body">A reforma tributária exige split de pagamento entre operadores. A base financeira não está estruturada para suportar múltiplos modelos de negócio com regras fiscais distintas.</div>
-          </div>
+          <div class="dor-item"><div class="dor-title">380 contratos vencem por ano sem notificação</div><div class="dor-body">Nenhuma ação proativa de renovação. No último ano de contrato, nenhum fluxo de fidelização é acionado no dia a dia da loja.</div><button class="dor-link" data-goto="sales" data-row="sf-contr">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Inauguração de loja sem processo estruturado</div><div class="dor-body">Não existe checklist, enxoval ou fluxo de abertura padronizado. Cada inauguração reinventa o processo do zero — sem rastreabilidade.</div><button class="dor-link" data-goto="sales" data-row="sf-inaug">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Relação posto–franquia sem histórico <span class="new-badge">15/OUT</span></div><div class="dor-body">Principal dor técnica: numa sucessão, não dá para ver o histórico posto–franquia. Campos customizados contornam o problema, sem modelo de dados real.</div><button class="dor-link" data-goto="sales" data-row="sf-suc">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Expansão e implantação fora do CRM <span class="new-badge">15/OUT</span></div><div class="dor-body">Leads de expansão e projetos de implantação de franquias vivem no Monday.com, separados dos contratos no Salesforce.</div><button class="dor-link" data-goto="sales" data-row="sf-monday">Ver solução → <span class="sol">Sales Cloud</span></button></div>
         </div>
       </div>
 
+      <div class="dor-cat reveal" data-cat="acc">
+        <div class="dor-cat-header"><span class="dor-cat-label acc">Acesso &amp; Compras B2B</span><div class="dor-cat-rule"></div><span class="dor-cat-count">4 travas</span></div>
+        <div class="dor-grid">
+          <div class="dor-item"><div class="dor-title">Acesso ao Mania de Abastecer amarrado ao franqueado <span class="new-badge">15/OUT</span></div><div class="dor-body">O login vem do cadastro do franqueado, mas quem compra é o gerente ou funcionário do posto. Contatos e e-mails vêm do Canal de Negócios.</div><button class="dor-link" data-goto="exp" data-row="sf-acesso">Ver solução → <span class="sol">Experience Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Redes compram loja a loja <span class="new-badge">15/OUT</span></div><div class="dor-body">Em grupos econômicos (ex.: Rede Duque), o comprador precisa entrar loja por loja — sem visão nem pedido consolidado da rede.</div><button class="dor-link" data-goto="exp" data-row="sf-rede">Ver solução → <span class="sol">Experience Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Quem não tem código SAP não compra <span class="new-badge">15/OUT</span></div><div class="dor-body">O piloto "Minha Quitandinha" (lojas de condomínio) e as lojas em implantação, que compram o enxoval antes de ter ZBRM, não têm cadastro, login próprio nem rastreio nos legados.</div><button class="dor-link" data-goto="cg" data-row="sf-quit">Ver solução → <span class="sol">CG Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Sem SSO para o franqueado <span class="new-badge">15/OUT</span></div><div class="dor-body">O franqueado precisa entrar no Canal de Negócios, no Mania e em mais n sistemas fora da plataforma Salesforce, com uma senha para cada.</div><button class="dor-link" data-goto="exp" data-row="sf-sso">Ver solução → <span class="sol">Salesforce Identity</span></button></div>
+        </div>
+      </div>
+
+      <div class="dor-cat reveal" data-cat="fin">
+        <div class="dor-cat-header"><span class="dor-cat-label fin">Financeiro &amp; Compliance</span><div class="dor-cat-rule"></div><span class="dor-cat-count">2 travas</span></div>
+        <div class="dor-grid">
+          <div class="dor-item"><div class="dor-title">Segmento financeiro ZBRM não existe</div><div class="dor-body">O modelo de crédito, cobrança e condições comerciais foi desenhado para revendedor de posto. Franqueados de loja fora do posto não têm segmento financeiro próprio.</div><button class="dor-link" data-goto="sales" data-row="sf-fin">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+          <div class="dor-item"><div class="dor-title">Split de pagamento não preparado para a reforma tributária</div><div class="dor-body">A reforma tributária exige split de pagamento entre operadores. A base financeira não suporta múltiplos modelos de negócio com regras fiscais distintas.</div><button class="dor-link" data-goto="sales" data-row="sf-fin">Ver solução → <span class="sol">Sales Cloud</span></button></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- OPORTUNIDADES -->
-  <section class="section" id="oportunidades">
-    <div class="section-header">
+  <!-- 02 OPORTUNIDADES -->
+  <section class="section" id="oportunidades" data-title="Oportunidades">
+    <div class="section-header reveal">
       <span class="section-num">02</span>
       <div>
         <h2 class="section-title">Onde a tecnologia cria valor</h2>
         <p class="section-subtitle">Oportunidades identificadas no discovery</p>
       </div>
     </div>
-    <div class="oport-list">
-      <div class="oport-row">
+
+    <div class="filters reveal" role="group" aria-label="Filtrar oportunidades por impacto">
+      <button class="chip" aria-pressed="true" data-ofilter="all">Todas <span class="chip-count">9</span></button>
+      <button class="chip" aria-pressed="false" data-ofilter="high">Alto impacto <span class="chip-count">5</span></button>
+      <button class="chip" aria-pressed="false" data-ofilter="med">Médio impacto <span class="chip-count">4</span></button>
+    </div>
+
+    <div class="oport-list reveal">
+      <div class="oport-row" data-impact="high">
         <div class="oport-area">Momento de consumo</div>
-        <div class="oport-body"><strong>Oferta combinada abasteceu + loja</strong> — cruzar evento de abastecimento (Premmia) com ticket de loja cria a oferta contextual mais relevante: combustível + conveniência como experiência única.</div>
+        <div class="oport-body"><strong>Oferta combinada abasteceu + loja</strong> — cruzar evento de abastecimento (Premmia) com ticket de loja cria a oferta contextual mais relevante: combustível + conveniência como experiência única.
+          <div class="oport-plat"><span class="tag blue">Data 360</span><span class="tag gray">Premmia</span><span class="tag gray">Fase 2</span></div></div>
         <div class="oport-impact"><div class="impact-dot impact-high"></div><span class="impact-label">Alto impacto</span></div>
       </div>
-      <div class="oport-row">
+      <div class="oport-row" data-impact="high">
         <div class="oport-area">Gestão de sell-out</div>
-        <div class="oport-body"><strong>Pedido sugerido e recompra automática</strong> — os dados de sell-out já existem. Falta o trigger: pedido ideal para lançamento, histórico de recompra, recompra automática. O ecommerce existe — fazer os dados falarem antes do franqueado agir.</div>
+        <div class="oport-body"><strong>Pedido sugerido e recompra automática</strong> — os dados de sell-out já existem. Falta o trigger: pedido ideal para lançamento, histórico de recompra, recompra automática. O ecommerce existe — fazer os dados falarem antes do franqueado agir.
+          <div class="oport-plat"><span class="tag green">CG Cloud</span><span class="tag gray">Fase 3</span></div></div>
         <div class="oport-impact"><div class="impact-dot impact-high"></div><span class="impact-label">Alto impacto</span></div>
       </div>
-      <div class="oport-row">
+      <div class="oport-row" data-impact="med">
         <div class="oport-area">Gestão de contratos</div>
-        <div class="oport-body"><strong>Notificação proativa no último ano de contrato</strong> — 380 contratos vencem sem ação. Early warning + plano de fidelização para franqueados no último ciclo contratual.</div>
+        <div class="oport-body"><strong>Notificação proativa no último ano de contrato</strong> — 380 contratos vencem sem ação. Early warning + plano de fidelização para franqueados no último ciclo contratual.
+          <div class="oport-plat"><span class="tag gold">Sales Cloud</span><span class="tag gray">Fase 2</span></div></div>
         <div class="oport-impact"><div class="impact-dot impact-med"></div><span class="impact-label">Médio impacto</span></div>
       </div>
-      <div class="oport-row">
+      <div class="oport-row" data-impact="high">
         <div class="oport-area">CG Cloud + Sales Cloud</div>
-        <div class="oport-body"><strong>Plataforma de execução no PDV</strong> — endereça visita técnica, planejamento de mix, rebates de parceiros e campanhas regionais. Conectado ao Sales Cloud e Data 360, cria independência para novos modelos sem fragmentar dados.</div>
+        <div class="oport-body"><strong>Plataforma de execução no PDV</strong> — endereça visita técnica, planejamento de mix, rebates de parceiros e campanhas regionais. Conectado ao Sales Cloud e Data 360, cria independência para novos modelos sem fragmentar dados.
+          <div class="oport-plat"><span class="tag green">CG Cloud</span><span class="tag gold">Sales Cloud</span><span class="tag gray">Fase 2</span></div></div>
         <div class="oport-impact"><div class="impact-dot impact-high"></div><span class="impact-label">Alto impacto</span></div>
       </div>
-      <div class="oport-row">
+      <div class="oport-row" data-impact="med">
         <div class="oport-area">Independência ZBRM</div>
-        <div class="oport-body"><strong>Arquitetura para loja fora do posto</strong> — expurgo da planilha de códigos SAP, criação de entidade ZBRM independente. Habilita corporate, aeroporto, shopping sem depender do código de posto.</div>
+        <div class="oport-body"><strong>Arquitetura para loja fora do posto</strong> — expurgo da planilha de códigos SAP, criação de entidade ZBRM independente. Habilita corporate, aeroporto, shopping sem depender do código de posto.
+          <div class="oport-plat"><span class="tag gold">Sales Cloud</span><span class="tag gray">ERP BR Mania</span><span class="tag gray">Fase 1</span></div></div>
         <div class="oport-impact"><div class="impact-dot impact-med"></div><span class="impact-label">Médio impacto</span></div>
       </div>
-      <div class="oport-row">
+      <div class="oport-row" data-impact="med">
         <div class="oport-area">Conhecimento do consumidor</div>
-        <div class="oport-body"><strong>Perfil Premmia como motor de personalização</strong> — cruzar comportamento Premmia com histórico de compra na loja. Sugestão de produtos, cross-selling, campanhas segmentadas. Visão 360 do Posto no Data 360 é o pré-requisito.</div>
+        <div class="oport-body"><strong>Perfil Premmia como motor de personalização</strong> — cruzar comportamento Premmia com histórico de compra na loja. Sugestão de produtos, cross-selling, campanhas segmentadas. Visão 360 do Posto no Data 360 é o pré-requisito.
+          <div class="oport-plat"><span class="tag blue">Data 360</span><span class="tag gray">Premmia</span><span class="tag gray">Fase 3</span></div></div>
+        <div class="oport-impact"><div class="impact-dot impact-med"></div><span class="impact-label">Médio impacto</span></div>
+      </div>
+      <div class="oport-row" data-impact="high">
+        <div class="oport-area">Execução no PDV <span class="new-badge">15/OUT</span></div>
+        <div class="oport-body"><strong>Execução medida pela própria rede</strong> — trocar a auditoria contratada e o Checklist Fácil por visitas com foto, reconhecimento de imagem, preço praticado e planograma. O resultado vira ação no mesmo dia, não relatório no mês seguinte.
+          <div class="oport-plat"><span class="tag green">CG Cloud</span><span class="tag gray">Fase 2</span></div></div>
+        <div class="oport-impact"><div class="impact-dot impact-high"></div><span class="impact-label">Alto impacto</span></div>
+      </div>
+      <div class="oport-row" data-impact="high">
+        <div class="oport-area">Novos canais B2B <span class="new-badge">15/OUT</span></div>
+        <div class="oport-body"><strong>Abastecer além da rede — Minha Quitandinha</strong> — lojas de condomínio e outros pontos sem posto passam a ser clientes com cadastro, login e rastreio. É a mesma fundação que destrava o ZBRM.
+          <div class="oport-plat"><span class="tag green">CG Cloud</span><span class="tag gray">Experience Cloud</span><span class="tag gray">Fase 1–3</span></div></div>
+        <div class="oport-impact"><div class="impact-dot impact-high"></div><span class="impact-label">Alto impacto</span></div>
+      </div>
+      <div class="oport-row" data-impact="med">
+        <div class="oport-area">Jornada do franqueado <span class="new-badge">15/OUT</span></div>
+        <div class="oport-body"><strong>Um login, um portal</strong> — SSO para Canal de Negócios, Mania de Abastecer e demais sistemas; acesso por papel (franqueado, gerente, comprador de rede) e compra consolidada para grupos econômicos.
+          <div class="oport-plat"><span class="tag gray">Identity</span><span class="tag gray">Experience Cloud</span><span class="tag gray">Fase 1–2</span></div></div>
         <div class="oport-impact"><div class="impact-dot impact-med"></div><span class="impact-label">Médio impacto</span></div>
       </div>
     </div>
   </section>
 
-  <!-- SALESFORCE -->
-  <section class="section" id="salesforce">
-    <div class="section-header">
+  <!-- 03 SALESFORCE -->
+  <section class="section" id="salesforce" data-title="Como o Salesforce ajuda">
+    <div class="section-header reveal">
       <span class="section-num">03</span>
       <div>
-        <h2 class="section-title">Como o Salesforce destrава cada trava</h2>
-        <p class="section-subtitle">Data 360, Sales Cloud e CG Cloud — o que cada plataforma resolve</p>
+        <h2 class="section-title">Como o Salesforce destrava cada trava</h2>
+        <p class="section-subtitle">CG Cloud no centro — com Sales Cloud, Data 360 e Experience &amp; Integração</p>
       </div>
     </div>
 
-    <p class="sf-intro">
-      Cada trava de crescimento identificada no discovery tem uma resposta específica no ecossistema Salesforce. As três plataformas atuam em camadas complementares: Data 360 unifica os dados, Sales Cloud gerencia os relacionamentos com franqueados, e o CG Cloud opera na ponta — no PDV e na execução diária da loja.
-    </p>
+    <p class="section-lead reveal">Cada trava identificada nos discoveries tem uma resposta específica no ecossistema Salesforce. O <strong style="color:var(--green-lt)">CG Cloud</strong> é o núcleo — opera na ponta, no PDV e na execução diária da loja. O <strong style="color:var(--gold)">Sales Cloud</strong> gerencia franqueados e contratos, o <strong style="color:var(--blue)">Data 360</strong> unifica os dados, e a camada de <strong style="color:var(--silver)">Experience &amp; Integração</strong> resolve acesso e conexões com o que fica fora da plataforma.</p>
 
-    <div class="sf-tabs">
-      <button class="sf-tab active" onclick="showSF('sf-data', this)">
-        <span class="sf-tab-name">Data 360</span>
-        <span class="sf-tab-role">Inteligência & Visão Unificada</span>
-        <div class="sf-tab-bar"></div>
-      </button>
-      <button class="sf-tab" onclick="showSF('sf-sales', this)">
-        <span class="sf-tab-name">Sales Cloud</span>
-        <span class="sf-tab-role">Gestão de Franqueados & Contratos</span>
-        <div class="sf-tab-bar"></div>
-      </button>
-      <button class="sf-tab" onclick="showSF('sf-cg', this)">
-        <span class="sf-tab-name">CG Cloud</span>
-        <span class="sf-tab-role">Execução no PDV & Sell-out</span>
-        <div class="sf-tab-bar"></div>
-      </button>
+    <div class="sf-coverage reveal">
+      <div class="sf-cov"><div class="sf-cov-num">24 / 24</div><div class="sf-cov-label">travas com resposta mapeada</div></div>
+      <div class="sf-cov"><div class="sf-cov-num">10</div><div class="sf-cov-label">capacidades no CG Cloud — o maior bloco da solução</div></div>
+      <div class="sf-cov"><div class="sf-cov-num">0</div><div class="sf-cov-label">ecommerce substituído — Mania de Abastecer recebe triggers</div></div>
     </div>
 
-    <!-- DATA 360 -->
-    <div class="sf-panel active" id="sf-data">
-      <div class="sf-panel-header">
-        <div class="sf-panel-icon blue">🔍</div>
-        <div>
-          <div class="sf-panel-title">Salesforce Data 360</div>
-          <div class="sf-panel-desc">Plataforma de dados unificada que cria a Visão 360 do Posto — conectando comportamento de abastecimento, perfil Premmia e dados da loja para decisão em tempo real.</div>
-        </div>
+    <div class="reveal">
+      <div class="sf-tabs" role="tablist" aria-label="Plataformas Salesforce">
+        <button class="sf-tab c-green" role="tab" id="tab-cg" aria-controls="sf-cg" aria-selected="true" tabindex="0"><span class="sf-tab-name">CG Cloud<span class="sf-tab-core">NÚCLEO</span></span><span class="sf-tab-role">Execução no PDV, Trade &amp; Sell-out</span><div class="sf-tab-bar"></div></button>
+        <button class="sf-tab c-gold" role="tab" id="tab-sales" aria-controls="sf-sales" aria-selected="false" tabindex="-1"><span class="sf-tab-name">Sales Cloud</span><span class="sf-tab-role">Franqueados, Expansão &amp; Contratos</span><div class="sf-tab-bar"></div></button>
+        <button class="sf-tab c-blue" role="tab" id="tab-data" aria-controls="sf-data" aria-selected="false" tabindex="-1"><span class="sf-tab-name">Data 360</span><span class="sf-tab-role">Inteligência &amp; Visão Unificada</span><div class="sf-tab-bar"></div></button>
+        <button class="sf-tab c-silver" role="tab" id="tab-exp" aria-controls="sf-exp" aria-selected="false" tabindex="-1"><span class="sf-tab-name">Experience &amp; Integração</span><span class="sf-tab-role">Portal, SSO &amp; MuleSoft</span><div class="sf-tab-bar"></div></button>
       </div>
-      <div class="sf-matrix">
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Relatórios estáticos, sem recomendação</strong>Olham para o passado e não sugerem ação por formato de operação.</div>
-          <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Data Cloud + Einstein Analytics</div>
-            <div class="sf-feature-desc">Painéis dinâmicos com segmentação por formato (posto, ZBRM, aeroporto). Einstein gera recomendações de ação baseadas em padrões de sell-out e comportamento histórico.</div>
-            <span class="sf-feature-tag blue">Segmentação por formato</span>
-          </div>
-        </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Índice pista–loja não mensurado</strong>Não sabemos quantos que abastecem entram na loja.</div>
-          <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Data Cloud — Unified Profile</div>
-            <div class="sf-feature-desc">Correlaciona evento de abastecimento (Premmia) com transação de loja pelo mesmo CPF/perfil. Calcula o índice pista–loja automaticamente por posto.</div>
-            <span class="sf-feature-tag blue">Visão 360 do Posto</span>
-          </div>
-        </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Perfil Premmia não integrado à loja</strong>Comportamento do consumidor não alimenta ofertas na loja.</div>
-          <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Identity Resolution + Segmentation</div>
-            <div class="sf-feature-desc">Unifica perfil Premmia com histórico de compra BR Mania. Gera segmentos acionáveis para campanhas regionais e cross-selling em tempo real.</div>
-            <span class="sf-feature-tag blue">Personalização contextual</span>
-          </div>
-        </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>ERP independente sem visão única</strong>Dados do posto e da loja vivem em silos separados.</div>
-          <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">MuleSoft + Data Cloud Connectors</div>
-            <div class="sf-feature-desc">Conectores nativos para integrar ERP BR Mania, SAP Vibra e dados Premmia em um único data lake — sem substituir os sistemas de origem.</div>
-            <span class="sf-feature-tag blue">Integração sem substituição</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- SALES CLOUD -->
-    <div class="sf-panel" id="sf-sales">
-      <div class="sf-panel-header">
-        <div class="sf-panel-icon gold">📋</div>
-        <div>
-          <div class="sf-panel-title">Salesforce Sales Cloud</div>
-          <div class="sf-panel-desc">Gestão do relacionamento com franqueados: contratos, onboarding, expansão e fidelização. Os revendedores já existem no Sales Cloud — é construir sobre o que existe.</div>
+      <div class="sf-panel" id="sf-cg" role="tabpanel" aria-labelledby="tab-cg">
+        <div class="sf-panel-header">
+          <div class="sf-panel-icon green" aria-hidden="true">🏪</div>
+          <div><div class="sf-panel-title">Consumer Goods Cloud</div><div class="sf-panel-desc">A plataforma de execução no PDV e o coração da BR Mania do Futuro: promoções, visitas, planograma, preço praticado, rebates, sell-out e pedido sugerido no nível da loja — dentro ou fora do posto.</div></div>
         </div>
-      </div>
-      <div class="sf-matrix">
-        <div class="sf-row">
-          <div class="sf-pain"><strong>380 contratos vencem sem notificação</strong>Nenhuma ação proativa de renovação ou fidelização no ciclo final.</div>
+        <div class="sf-cols"><span>TRAVA</span><span></span><span>CAPACIDADE</span></div>
+        <div class="sf-row" id="sf-camp">
+          <div class="sf-pain"><strong>Sem campanhas regionais ou por posto</strong>Impossível criar uma campanha localizada para um posto ou região.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Opportunity Management + Flow Automation</div>
-            <div class="sf-feature-desc">Alertas automáticos 12, 6 e 3 meses antes do vencimento. Flows acionam plano de fidelização com tarefas para o gerente de conta e ofertas personalizadas para o franqueado.</div>
-            <span class="sf-feature-tag gold">Early warning de contratos</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Promotion Management (TPM)</div><div class="sf-feature-desc">Promoções segmentadas por posto, região, formato de loja ou público. Ex.: campanha de cuca só nos postos do RS. Integra com Data 360 para ativar o público certo.</div><div class="sf-tags"><span class="tag green">Campanhas por posto</span><span class="tag gray">Fase 2</span></div></div>
         </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Inauguração sem processo estruturado</strong>Cada abertura reinventa o checklist do zero.</div>
+        <div class="sf-row" id="sf-acel">
+          <div class="sf-pain"><strong>Acelera+ depende do plano de mkt do posto <span class="new-badge">15/OUT</span></strong>A franquia não participa de promoções sem o plano de marketing do posto.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Sales Cloud — Onboarding Playbooks</div>
-            <div class="sf-feature-desc">Playbook de inauguração como processo guiado: checklist de enxoval, materiais de merchandising, treinamento e primeiros pedidos — tudo rastreado no CRM por loja.</div>
-            <span class="sf-feature-tag gold">Processo de abertura</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Promotion Management por conta de loja</div><div class="sf-feature-desc">A loja BR Mania vira conta própria no CG Cloud, com elegibilidade a promoções definida por ela — não herdada do posto. O Acelera+ passa a ser um tipo de promoção configurável.</div><div class="sf-tags"><span class="tag green">Elegibilidade da loja</span><span class="tag gray">Fase 2</span></div></div>
         </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>PCR vinculada ao código SAP do posto</strong>Lojas independentes ZBRM não conseguem ter proposta comercial.</div>
+        <div class="sf-row" id="sf-audit">
+          <div class="sf-pain"><strong>Execução auditada por terceiros <span class="new-badge">15/OUT</span></strong>Gôndola e material promocional avaliados por auditoria externa (Vidi) e Checklist Fácil.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Account & Opportunity Model — ZBRM</div>
-            <div class="sf-feature-desc">Criar tipo de conta ZBRM independente no Sales Cloud, desvinculado do código SAP. Permite PCR, contrato e gestão de revendedor para corporate, aeroporto e shopping.</div>
-            <span class="sf-feature-tag gold">Entidade ZBRM independente</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Visit Execution + Einstein Image Recognition</div><div class="sf-feature-desc">Roteiro de visitas com tarefas digitais por loja: foto da gôndola com reconhecimento de imagem, conformidade de merchandising, ruptura e share de prateleira. Substitui o Checklist Fácil; a auditoria externa vira validação amostral.</div><div class="sf-tags"><span class="tag green">Execução medida pela rede</span><span class="tag gray">Substitui Checklist Fácil</span><span class="tag gray">Fase 2</span></div></div>
         </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Segmento financeiro ZBRM não existe</strong>Modelo de crédito e cobrança inadequado para franqueados fora do posto.</div>
+        <div class="sf-row" id="sf-preco">
+          <div class="sf-pain"><strong>Trade sem preço praticado <span class="new-badge">15/OUT</span></strong>Trade marketing não vê os preços na ponta.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Revenue Cloud + Partner Community</div>
-            <div class="sf-feature-desc">Configurar planos de pagamento e condições comerciais específicas para ZBRM. Portal do franqueado para acompanhar pedidos, faturas e rebates em self-service.</div>
-            <span class="sf-feature-tag gold">Modelo financeiro por segmento</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Price Audit em visita + sell-out</div><div class="sf-feature-desc">Coleta de preço praticado como tarefa da visita e leitura automática dos cupons fiscais. Painel de preço por loja, região e formato para o trade.</div><div class="sf-tags"><span class="tag green">Preço praticado</span><span class="tag gray">Fase 2</span></div></div>
         </div>
-      </div>
-    </div>
-
-    <!-- CG CLOUD -->
-    <div class="sf-panel" id="sf-cg">
-      <div class="sf-panel-header">
-        <div class="sf-panel-icon green">🏪</div>
-        <div>
-          <div class="sf-panel-title">Consumer Goods Cloud</div>
-          <div class="sf-panel-desc">A plataforma de execução no PDV. Planejamento de mix, pedido sugerido, visita técnica, campanhas regionais e gestão de rebates — tudo no nível da loja individual.</div>
-        </div>
-      </div>
-      <div class="sf-matrix">
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Sem campanhas regionais ou por posto</strong>Impossível criar uma campanha localizada para um posto ou região específica.</div>
+        <div class="sf-row" id="sf-reb">
+          <div class="sf-pain"><strong>Gestão de rebates sem visibilidade</strong>Parceiros e franqueados não acompanham a performance de rebates.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">CG Cloud — Promotion Management</div>
-            <div class="sf-feature-desc">Criação de campanhas e promoções segmentadas por posto, região, formato de loja ou segmento de consumidor. Integra com Data Cloud para ativar o público certo no momento certo.</div>
-            <span class="sf-feature-tag green">Campanhas por posto</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Trade Promotion &amp; Rebate Management</div><div class="sf-feature-desc">Painel de rebates por parceiro e por loja, acompanhado em tempo real a partir do sell-out. Alertas de performance e projeção de atingimento de metas.</div><div class="sf-tags"><span class="tag green">Gestão de rebates</span><span class="tag gray">Fase 2</span></div></div>
         </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Pedido sem inteligência de sell-out</strong>Franqueado faz pedido manualmente, sem sugestão baseada em histórico.</div>
+        <div class="sf-row" id="sf-plano">
+          <div class="sf-pain"><strong>Planograma isolado no GEMP <span class="new-badge">15/OUT</span></strong>O planograma não conversa com visita, sortimento ou sell-out.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">Intelligent Order Management + AI Forecasting</div>
-            <div class="sf-feature-desc">Pedido sugerido calculado por histórico de sell-out, sazonalidade e lançamentos. Recompra automática com aprovação do franqueado — direto no ecommerce existente via trigger.</div>
-            <span class="sf-feature-tag green">Pedido sugerido inteligente</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Assortment &amp; Planogram Compliance</div><div class="sf-feature-desc">Sortimento e planograma por formato de loja dentro do CG Cloud. A visita verifica o planograma e o sell-out mostra o efeito — o GEMP é aposentado.</div><div class="sf-tags"><span class="tag gray">Substitui GEMP</span><span class="tag gray">Fase 2</span></div></div>
         </div>
-        <div class="sf-row">
-          <div class="sf-pain"><strong>Gestão de rebates sem visibilidade</strong>Parceiros e franqueados não acompanham performance de rebates em tempo real.</div>
-          <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">CG Cloud — Trade Promotion & Rebate Management</div>
-            <div class="sf-feature-desc">Painel de rebates por parceiro e por loja, com acompanhamento em tempo real. Alertas de performance e projeção de atingimento de metas por período.</div>
-            <span class="sf-feature-tag green">Gestão de rebates</span>
-          </div>
-        </div>
-        <div class="sf-row">
+        <div class="sf-row" id="sf-vis">
           <div class="sf-pain"><strong>Visita técnica sem rastreabilidade</strong>Execução no PDV não é registrada de forma estruturada.</div>
           <div class="sf-arrow">→</div>
-          <div class="sf-solution">
-            <div class="sf-feature">CG Cloud — Field Execution & Store Check</div>
-            <div class="sf-feature-desc">App de visita técnica com checklist digital, registro de gôndola, estoque e conformidade de merchandising. Histórico por loja e alertas de desvio de padrão.</div>
-            <span class="sf-feature-tag green">Execução no campo</span>
-          </div>
+          <div class="sf-solution"><div class="sf-feature">Retail Execution — app mobile offline</div><div class="sf-feature-desc">App do consultor com checklist, estoque, gôndola e histórico por loja. Funciona offline e alerta desvios de padrão. KPIs da loja substituem o acompanhamento de metas do Mereo.</div><div class="sf-tags"><span class="tag green">Execução no campo</span><span class="tag gray">Substitui Mereo</span><span class="tag gray">Fase 2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-ped">
+          <div class="sf-pain"><strong>Pedido sem inteligência de sell-out</strong>O franqueado faz o pedido manualmente, sem sugestão a partir do histórico.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Pedido sugerido + AI Forecasting</div><div class="sf-feature-desc">Pedido sugerido por histórico de sell-out, sazonalidade e lançamentos (pedido ideal de lançamento). Recompra automática aprovada pelo franqueado e enviada ao Mania de Abastecer como trigger — sem substituir o ecommerce.</div><div class="sf-tags"><span class="tag green">Pedido sugerido</span><span class="tag gray">Mania mantido</span><span class="tag gray">Fase 3</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-cupom">
+          <div class="sf-pain"><strong>Cupom fiscal de 12 software houses <span class="new-badge">15/OUT</span></strong>O sell-out não chega em tempo real e cada PDV entrega num formato.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Sell-out Ingestion (MuleSoft + Data 360)</div><div class="sf-feature-desc">Uma API única de ingestão normaliza os cupons das 12 software houses em near real time e alimenta o CG Cloud (sell-out por loja) e o Data 360 (índice pista–loja).</div><div class="sf-tags"><span class="tag green">Near real time</span><span class="tag gray">Fase 1–2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-quit">
+          <div class="sf-pain"><strong>Sem código SAP, sem compra <span class="new-badge">15/OUT</span></strong>Minha Quitandinha e lojas em implantação não têm cadastro nem login.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Conta de loja independente do SAP</div><div class="sf-feature-desc">Qualquer ponto de venda (condomínio, loja em implantação, ZBRM) vira conta no CG Cloud com status de ciclo de vida. Ele compra o enxoval e o sortimento com login próprio e rastreio de ponta a ponta — o SAP recebe o pedido, não decide quem existe.</div><div class="sf-tags"><span class="tag green">Minha Quitandinha</span><span class="tag gray">Fase 1</span></div></div>
         </div>
       </div>
+
+      <div class="sf-panel" id="sf-sales" role="tabpanel" aria-labelledby="tab-sales" hidden>
+        <div class="sf-panel-header">
+          <div class="sf-panel-icon gold" aria-hidden="true">📋</div>
+          <div><div class="sf-panel-title">Salesforce Sales Cloud</div><div class="sf-panel-desc">Relacionamento com franqueados, do lead de expansão ao contrato renovado. Os revendedores e contratos já estão no Salesforce — é construir sobre o que existe.</div></div>
+        </div>
+        <div class="sf-cols"><span>TRAVA</span><span></span><span>CAPACIDADE</span></div>
+        <div class="sf-row" id="sf-contr">
+          <div class="sf-pain"><strong>380 contratos vencem sem notificação</strong>Nenhuma ação proativa de renovação ou fidelização no ciclo final.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Contract Management + Flow Automation</div><div class="sf-feature-desc">Alertas automáticos 12, 6 e 3 meses antes do vencimento. No último ano, Flows criam um plano de fidelização com ações no dia a dia da loja, que também aparecem nas visitas do CG Cloud.</div><div class="sf-tags"><span class="tag gold">Early warning</span><span class="tag gray">Fase 2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-inaug">
+          <div class="sf-pain"><strong>Inauguração sem processo estruturado</strong>Cada abertura reinventa o checklist do zero.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Action Plans de inauguração</div><div class="sf-feature-desc">Playbook guiado: checklist, enxoval, merchandising, treinamento e primeiros pedidos, rastreados por loja. Os pedidos do enxoval saem já da conta da loja em implantação.</div><div class="sf-tags"><span class="tag gold">Processo de abertura</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-monday">
+          <div class="sf-pain"><strong>Expansão e implantação no Monday <span class="new-badge">15/OUT</span></strong>Leads e projetos de implantação ficam fora do CRM.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Lead &amp; Opportunity + Action Plans</div><div class="sf-feature-desc">Leads de expansão da rede entram no funil do Sales Cloud. Ao fechar, o projeto de implantação nasce como Action Plan ligado ao contrato — uma jornada única, do lead à loja aberta.</div><div class="sf-tags"><span class="tag gray">Substitui Monday</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-pcr">
+          <div class="sf-pain"><strong>PCR vinculada ao código SAP do posto</strong>Lojas ZBRM independentes não conseguem ter proposta comercial.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Modelo de conta ZBRM</div><div class="sf-feature-desc">Tipo de conta ZBRM independente do código SAP, com PCR, contrato e gestão de revendedor para corporate, aeroporto e shopping.</div><div class="sf-tags"><span class="tag gold">Entidade ZBRM</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-suc">
+          <div class="sf-pain"><strong>Sucessão posto–franquia sem histórico <span class="new-badge">15/OUT</span></strong>Campos customizados contornam a falta de um modelo de relacionamento.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Account Relationships com vigência</div><div class="sf-feature-desc">Posto, loja e franqueado viram contas distintas, ligadas por relacionamentos com data de início e fim. Uma sucessão encerra um vínculo e abre outro, e o histórico fica completo.</div><div class="sf-tags"><span class="tag gold">Histórico de sucessão</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-fin">
+          <div class="sf-pain"><strong>Segmento financeiro ZBRM e split de pagamento</strong>Modelo de crédito e cobrança inadequado; base não pronta para a reforma tributária.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Revenue Cloud + integração ERP</div><div class="sf-feature-desc">Condições comerciais e planos de pagamento por segmento (posto, ZBRM, loja própria). Regras de split por modelo de negócio, integradas ao ERP BR Mania.</div><div class="sf-tags"><span class="tag gold">Modelo financeiro por segmento</span><span class="tag gray">Fase 1–3</span></div></div>
+        </div>
+      </div>
+
+      <div class="sf-panel" id="sf-data" role="tabpanel" aria-labelledby="tab-data" hidden>
+        <div class="sf-panel-header">
+          <div class="sf-panel-icon blue" aria-hidden="true">🔍</div>
+          <div><div class="sf-panel-title">Salesforce Data 360</div><div class="sf-panel-desc">A Visão 360 do Posto: une abastecimento, perfil Premmia, sell-out e operação para decidir em tempo real — e prepara a BR Mania para uma JV sem perder sinergias.</div></div>
+        </div>
+        <div class="sf-cols"><span>TRAVA</span><span></span><span>CAPACIDADE</span></div>
+        <div class="sf-row" id="sf-rel">
+          <div class="sf-pain"><strong>Relatórios estáticos, sem recomendação</strong>Olham para o passado e não sugerem ação por formato.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Data 360 + Tableau Next + Einstein</div><div class="sf-feature-desc">Painéis segmentados por formato (posto, ZBRM, aeroporto) com recomendação de próxima ação. Gera os dados para decidir sobre o marketplace.</div><div class="sf-tags"><span class="tag blue">Ação por formato</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-dados">
+          <div class="sf-pain"><strong>Indicadores em 5+ ferramentas <span class="new-badge">15/OUT</span></strong>PowerBI, Tableau, Mereo e Excel, sem versão única.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Data 360 como camada semântica única</div><div class="sf-feature-desc">Os indicadores de performance, inadimplência, logística, food, contratos e galonagem passam a ler do mesmo modelo. O PowerBI é consolidado no Tableau, que já é Salesforce.</div><div class="sf-tags"><span class="tag blue">Versão única da verdade</span><span class="tag gray">Consolida PowerBI</span><span class="tag gray">Fase 1–2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-idx">
+          <div class="sf-pain"><strong>Índice pista–loja não mensurado</strong>Não sabemos quantos que abastecem entram na loja.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Unified Profile</div><div class="sf-feature-desc">Correlaciona o abastecimento (Premmia) com o cupom da loja pelo mesmo CPF/perfil e calcula o índice pista–loja por posto, todos os dias.</div><div class="sf-tags"><span class="tag blue">Visão 360 do Posto</span><span class="tag gray">Fase 2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-prem">
+          <div class="sf-pain"><strong>Premmia sem visão BR Mania <span class="new-badge">15/OUT</span></strong>A jornada Premmia mal identifica se o posto está ativo.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Identity Resolution + Segmentation</div><div class="sf-feature-desc">Unifica o perfil Premmia com o histórico de compra BR Mania e marca o status do posto/loja em tempo real. Gera segmentos para cross-selling e ofertas.</div><div class="sf-tags"><span class="tag blue">Personalização</span><span class="tag gray">Fase 2–3</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-24h">
+          <div class="sf-pain"><strong>Integração em lote 24h com contornos <span class="new-badge">15/OUT</span></strong>Um campo da Account define se existe ZBRM, e o resto vira exceção.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Ingestão orientada a evento</div><div class="sf-feature-desc">Criação ou alteração de posto, loja e franqueado chega por evento, não por lote de 24h. Casos como a loja do prédio da Vibra passam a ter cadastro próprio, sem gambiarra.</div><div class="sf-tags"><span class="tag blue">Fim do lote 24h</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-erp">
+          <div class="sf-pain"><strong>ERP independente sem visão única / JV</strong>Dados do posto e da loja vivem em silos.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">MuleSoft + conectores Data 360</div><div class="sf-feature-desc">Integra ERP BR Mania, SAP Vibra e Premmia sem substituir sistemas de origem. A camada de integração deixa a BR Mania pronta para uma JV: dá para separar sem reconstruir.</div><div class="sf-tags"><span class="tag blue">Pronto para JV</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+      </div>
+
+      <div class="sf-panel" id="sf-exp" role="tabpanel" aria-labelledby="tab-exp" hidden>
+        <div class="sf-panel-header">
+          <div class="sf-panel-icon silver" aria-hidden="true">🔐</div>
+          <div><div class="sf-panel-title">Experience Cloud, Identity &amp; MuleSoft</div><div class="sf-panel-desc">A camada de acesso e integração: um portal e um login para o franqueado, e conexões com o que continua fora da plataforma (Mania de Abastecer, ServiceNow, SAP, PDVs).</div></div>
+        </div>
+        <div class="sf-cols"><span>TRAVA</span><span></span><span>CAPACIDADE</span></div>
+        <div class="sf-row" id="sf-sso">
+          <div class="sf-pain"><strong>Sem SSO para o franqueado <span class="new-badge">15/OUT</span></strong>Canal de Negócios, Mania e n sistemas, cada um com sua senha.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Salesforce Identity como IdP</div><div class="sf-feature-desc">Mesmo fora da plataforma, os sistemas aceitam login federado (SAML/OIDC) com o Salesforce como provedor de identidade. Um login dá acesso ao Canal de Negócios, ao Mania de Abastecer e aos demais portais.</div><div class="sf-tags"><span class="tag gray">Login único</span><span class="tag gold">A validar na arquitetura</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-acesso">
+          <div class="sf-pain"><strong>Acesso amarrado ao franqueado <span class="new-badge">15/OUT</span></strong>Quem compra é o gerente do posto, não o franqueado.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Experience Cloud — Portal do Franqueado</div><div class="sf-feature-desc">Usuários por papel (franqueado, gerente, comprador) ligados à conta da loja. O portal substitui o Canal de Negócios como fonte de contatos e concentra Mania+, Desafio, metas e chamados.</div><div class="sf-tags"><span class="tag gray">Acesso por papel</span><span class="tag gray">Substitui Mania+ / Desafio</span><span class="tag gray">Fase 1–2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-rede">
+          <div class="sf-pain"><strong>Redes compram loja a loja <span class="new-badge">15/OUT</span></strong>Comprador de grupo econômico (ex.: Rede Duque) entra loja por loja.</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Hierarquia de grupo econômico + Account Switcher</div><div class="sf-feature-desc">O grupo econômico vira conta-mãe das lojas. O comprador da rede troca de loja sem novo login, vê o consolidado e aprova pedidos em lote.</div><div class="sf-tags"><span class="tag gray">Visão de rede</span><span class="tag gray">Fase 2</span></div></div>
+        </div>
+        <div class="sf-row" id="sf-chamados">
+          <div class="sf-pain"><strong>Chamados por posto sem visão BR Mania <span class="new-badge">15/OUT</span></strong>Chamados internos no ServiceNow, sem visão dedicada (LT = EV).</div>
+          <div class="sf-arrow">→</div>
+          <div class="sf-solution"><div class="sf-feature">Integração ServiceNow → Visão 360</div><div class="sf-feature-desc">Os chamados do ServiceNow entram na conta da loja com categoria, status e próxima ação. O EV e as áreas de negócio enxergam tudo numa visão única da BR Mania, sem trocar o ITSM.</div><div class="sf-tags"><span class="tag gray">Visão unificada</span><span class="tag gray">ServiceNow mantido</span><span class="tag gray">Fase 1</span></div></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- VISÃO 360 DO POSTO -->
-  <section class="section" id="visao360">
-    <div class="section-header">
+  <!-- 04 SISTEMAS -->
+  <section class="section" id="sistemas" data-title="Sistemas atuais">
+    <div class="section-header reveal">
       <span class="section-num">04</span>
+      <div>
+        <h2 class="section-title">Todos os sistemas atuais têm destino na plataforma</h2>
+        <p class="section-subtitle">Inventário levantado em 15/Out — o que cada ferramenta vira no Salesforce</p>
+      </div>
+    </div>
+
+    <p class="section-lead reveal">Nenhum sistema fica sem resposta. A regra é <strong style="color:var(--green-lt)">substituir</strong> o que é execução e relacionamento (o CG Cloud absorve as três ferramentas de execução: Checklist Fácil, GEMP e Mereo), <strong style="color:var(--blue)">consolidar</strong> os indicadores, <strong style="color:var(--gold)">integrar</strong> o que funciona e não precisa mudar, e <strong style="color:var(--silver)">evoluir</strong> o que já é Salesforce.</p>
+
+    <div class="sys-summary reveal" role="group" aria-label="Filtrar por ação">
+      <button class="sys-sum" aria-pressed="false" data-sys="sub"><div class="sys-sum-num" style="color:var(--green-lt)">6</div><div class="sys-sum-label">SUBSTITUIR</div></button>
+      <button class="sys-sum" aria-pressed="false" data-sys="con"><div class="sys-sum-num" style="color:var(--blue)">2</div><div class="sys-sum-label">CONSOLIDAR</div></button>
+      <button class="sys-sum" aria-pressed="false" data-sys="int"><div class="sys-sum-num" style="color:var(--gold)">3</div><div class="sys-sum-label">INTEGRAR</div></button>
+      <button class="sys-sum" aria-pressed="false" data-sys="man"><div class="sys-sum-num" style="color:var(--silver)">2</div><div class="sys-sum-label">MANTER &amp; EVOLUIR</div></button>
+    </div>
+
+    <div class="reveal" style="overflow-x:auto">
+      <table class="sys-table">
+        <thead><tr><th>SISTEMA</th><th>USO HOJE</th><th>AÇÃO</th><th>DESTINO SALESFORCE</th></tr></thead>
+        <tbody>
+          <tr data-act="sub"><td class="sys-name">Monday.com</td><td class="sys-use">CRM de leads de expansão da rede + projetos de implantação</td><td><span class="act sub">SUBSTITUIR</span></td><td class="sys-dest">Sales Cloud<small>Leads de expansão → Opportunity → Action Plans de implantação</small></td></tr>
+          <tr data-act="sub"><td class="sys-name">Checklist Fácil</td><td class="sys-use">Formulários de visita (consultoria) e auditoria interna</td><td><span class="act sub">SUBSTITUIR</span></td><td class="sys-dest">CG Cloud<small>Visit Execution com tarefas digitais, fotos e Image Recognition</small></td></tr>
+          <tr data-act="sub"><td class="sys-name">GEMP</td><td class="sys-use">Portal de planograma de vendas</td><td><span class="act sub">SUBSTITUIR</span></td><td class="sys-dest">CG Cloud<small>Assortment &amp; Planogram por formato, verificado na visita</small></td></tr>
+          <tr data-act="sub"><td class="sys-name">Mereo</td><td class="sys-use">Acompanhamento de metas</td><td><span class="act sub">SUBSTITUIR</span></td><td class="sys-dest">CG Cloud + Tableau<small>KPIs e metas por loja, consultor e região</small></td></tr>
+          <tr data-act="sub"><td class="sys-name">Portal do Mania+</td><td class="sys-use">Resultados do programa de incentivos BR Mania</td><td><span class="act sub">SUBSTITUIR</span></td><td class="sys-dest">Experience Cloud + Loyalty Management<small>Programa de incentivos dentro do Portal do Franqueado</small></td></tr>
+          <tr data-act="sub"><td class="sys-name">Desafio</td><td class="sys-use">Resultado do Desafio (viagem Praga)</td><td><span class="act sub">SUBSTITUIR</span></td><td class="sys-dest">Experience Cloud + Loyalty Management<small>Ranking e campanhas de incentivo com dados do Data 360</small></td></tr>
+          <tr data-act="con"><td class="sys-name">PowerBI</td><td class="sys-use">Performance de lojas, inadimplência, logística, food e outros</td><td><span class="act con">CONSOLIDAR</span></td><td class="sys-dest">Tableau + Data 360<small>Mesmos indicadores, num modelo semântico único</small></td></tr>
+          <tr data-act="con"><td class="sys-name">Excel / PPT</td><td class="sys-use">Reports, relatórios e apresentações das áreas internas</td><td><span class="act con">CONSOLIDAR</span></td><td class="sys-dest">Tableau + Data 360<small>Dashboards ao vivo no lugar de planilhas manuais</small></td></tr>
+          <tr data-act="int"><td class="sys-name">Portal da Vidi</td><td class="sys-use">Auditoria externa e cliente oculto</td><td><span class="act int">INTEGRAR</span></td><td class="sys-dest">CG Cloud + Data 360<small>Curto prazo: resultados entram na conta da loja. Longo prazo: execução medida pela própria rede</small></td></tr>
+          <tr data-act="int"><td class="sys-name">Mania de Abastecer</td><td class="sys-use">Portal B2B de compras (food service e sortimento)</td><td><span class="act int">INTEGRAR</span></td><td class="sys-dest">CG Cloud + Experience Cloud + Identity<small>Mantido. Recebe pedido sugerido e recompra do CG Cloud; login por papel e SSO</small></td></tr>
+          <tr data-act="int"><td class="sys-name">ServiceNow</td><td class="sys-use">Abertura de chamados internos</td><td><span class="act int">INTEGRAR</span></td><td class="sys-dest">MuleSoft → Visão 360<small>Mantido como ITSM. Chamados por posto aparecem na conta da loja (LT = EV)</small></td></tr>
+          <tr data-act="man"><td class="sys-name">Salesforce</td><td class="sys-use">Contratos BR Mania e Vibra</td><td><span class="act man">MANTER &amp; EVOLUIR</span></td><td class="sys-dest">Sales Cloud<small>Evolui: modelo ZBRM, sucessão posto–franquia, alertas de vencimento</small></td></tr>
+          <tr data-act="man"><td class="sys-name">Tableau</td><td class="sys-use">Contratos, galonagem, penetração BR Mania em postos ativos</td><td><span class="act man">MANTER &amp; EVOLUIR</span></td><td class="sys-dest">Tableau Next + Data 360<small>Evolui: passa a ler do Data 360 e absorve o PowerBI</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sys-extra reveal">
+      <div class="sys-extra-title">CITADOS NO DISCOVERY, FORA DO INVENTÁRIO</div>
+      <div class="sys-extra-grid">
+        <div class="sys-extra-item"><strong>Canal de Negócios</strong>Fonte de contatos, e-mails e ZBRM → <em>Experience Cloud</em> (Portal do Franqueado)</div>
+        <div class="sys-extra-item"><strong>Premmia</strong>Fidelidade do consumidor → <em>Data 360</em> (Unified Profile)</div>
+        <div class="sys-extra-item"><strong>SAP Vibra + ERP BR Mania</strong>Produtos, faturamento e posto → <em>MuleSoft</em> (mantidos)</div>
+        <div class="sys-extra-item"><strong>PDVs · 12 software houses</strong>Cupons fiscais → <em>Ingestion API</em> near real time</div>
+      </div>
+    </div>
+
+    <div class="callout reveal"><strong>Ponto de atenção:</strong> o SSO do franqueado envolve sistemas fora da plataforma. O Salesforce Identity pode atuar como provedor de identidade (SAML/OIDC) para eles — viabilidade a confirmar caso a caso na reunião de arquitetura.</div>
+  </section>
+
+  <!-- 05 VISÃO 360 -->
+  <section class="section" id="visao360" data-title="Visão 360 do posto">
+    <div class="section-header reveal">
+      <span class="section-num">05</span>
       <div>
         <h2 class="section-title">A oferta contextual depende da Visão 360</h2>
         <p class="section-subtitle">O pré-requisito arquitetural de toda a estratégia</p>
       </div>
     </div>
-    <div class="v360">
+
+    <div class="v360 reveal">
       <div>
         <div class="v360-title">Abasteceu + entrou na loja<br>= momento de oferta</div>
         <p class="v360-body">A estratégia central da BR Mania do Futuro é capturar o comportamento no PDV e integrá-lo ao perfil Premmia. Para isso funcionar, a Visão 360 do Posto precisa estar disponível no Data 360 — esse é o pré-requisito arquitetural de tudo.</p>
         <div class="v360-signals">
-          <div class="v360-signal">
-            <div class="signal-dot" style="background:var(--green-lt)"></div>
-            <span style="color:rgba(239,242,238,0.65)">Evento de abastecimento (Premmia) → sinal de contexto</span>
-          </div>
-          <div class="v360-signal">
-            <div class="signal-dot" style="background:var(--gold)"></div>
-            <span style="color:rgba(239,242,238,0.65)">Ticket de loja BR Mania → comportamento de consumo</span>
-          </div>
-          <div class="v360-signal">
-            <div class="signal-dot" style="background:#8AABFF"></div>
-            <span style="color:rgba(239,242,238,0.65)">Perfil Premmia → motor de personalização</span>
-          </div>
-          <div class="v360-signal">
-            <div class="signal-dot" style="background:var(--silver)"></div>
-            <span style="color:rgba(239,242,238,0.65)">Data 360 → visão consolidada para decisão</span>
-          </div>
+          <div class="v360-signal"><span class="signal-dot" style="background:var(--green-lt)"></span>Evento de abastecimento (Premmia) → sinal de contexto</div>
+          <div class="v360-signal"><span class="signal-dot" style="background:var(--gold)"></span>Ticket de loja BR Mania → comportamento de consumo</div>
+          <div class="v360-signal"><span class="signal-dot" style="background:var(--blue)"></span>Perfil Premmia → motor de personalização</div>
+          <div class="v360-signal"><span class="signal-dot" style="background:var(--silver)"></span>Data 360 → visão consolidada para decisão</div>
         </div>
       </div>
-      <div class="v360-diagram">
-        <div class="v360-flow-item active">Abastecimento detectado (Premmia)<span class="v360-flow-label">GATILHO</span></div>
-        <div class="v360-flow-arrow">↓</div>
-        <div class="v360-flow-item">Visão 360 do Posto (Data 360)</div>
-        <div class="v360-flow-arrow">↓</div>
-        <div class="v360-flow-item">Perfil do consumidor Premmia</div>
-        <div class="v360-flow-arrow">↓</div>
-        <div class="v360-flow-item active">Oferta combinada personalizada<span class="v360-flow-label">RESULTADO</span></div>
-        <div class="v360-flow-arrow">↓</div>
-        <div class="v360-flow-item">Ticket BR Mania + índice pista–loja</div>
+      <div>
+        <div class="v360-diagram" role="list" aria-label="Fluxo da oferta contextual">
+          <button class="v360-flow-item edge active" role="listitem" data-step="0">Abastecimento detectado (Premmia)<span class="v360-flow-label">GATILHO</span></button>
+          <div class="v360-flow-arrow" aria-hidden="true">↓</div>
+          <button class="v360-flow-item" role="listitem" data-step="1">Visão 360 do Posto (Data 360)</button>
+          <div class="v360-flow-arrow" aria-hidden="true">↓</div>
+          <button class="v360-flow-item" role="listitem" data-step="2">Perfil do consumidor Premmia</button>
+          <div class="v360-flow-arrow" aria-hidden="true">↓</div>
+          <button class="v360-flow-item edge" role="listitem" data-step="3">Oferta combinada personalizada<span class="v360-flow-label">RESULTADO</span></button>
+          <div class="v360-flow-arrow" aria-hidden="true">↓</div>
+          <button class="v360-flow-item" role="listitem" data-step="4">Ticket BR Mania + índice pista–loja</button>
+        </div>
+        <div class="v360-detail" id="v360Detail" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- Simulador -->
+    <div class="sim reveal" aria-labelledby="simTitle">
+      <div class="sim-head">
+        <div class="sim-title" id="simTitle">Simulador do índice pista–loja</div>
+        <div class="sim-note">Valores ilustrativos — ajuste com dados reais de um posto</div>
+      </div>
+      <div class="sim-grid">
+        <div class="sim-field"><label for="simAbast">ABASTECIMENTOS / MÊS</label><input id="simAbast" type="number" min="0" step="100" value="12000"></div>
+        <div class="sim-field"><label for="simLoja">ENTRARAM NA LOJA / MÊS</label><input id="simLoja" type="number" min="0" step="50" value="1800"></div>
+        <div class="sim-field"><label for="simTicket">TICKET MÉDIO LOJA (R$)</label><input id="simTicket" type="number" min="0" step="1" value="28"></div>
+        <div class="sim-field"><label for="simGain">GANHO DE CONVERSÃO (P.P.)</label><input id="simGain" type="number" min="0" max="100" step="1" value="3"></div>
+      </div>
+      <div class="sim-out">
+        <div><div class="sim-out-num" id="outIdx">—</div><div class="sim-out-label">Índice pista–loja atual</div></div>
+        <div><div class="sim-out-num green" id="outNew">—</div><div class="sim-out-label">Índice com oferta contextual</div></div>
+        <div><div class="sim-out-num" id="outRev">—</div><div class="sim-out-label">Receita incremental estimada / mês</div></div>
       </div>
     </div>
   </section>
 
-  <!-- ARQUITETURA -->
-  <section class="section" id="arquitetura">
-    <div class="section-header">
-      <span class="section-num">05</span>
+  <!-- 05 ARQUITETURA -->
+  <section class="section" id="arquitetura" data-title="Arquitetura">
+    <div class="section-header reveal">
+      <span class="section-num">06</span>
       <div>
         <h2 class="section-title">Arquitetura para independência e sinergias</h2>
         <p class="section-subtitle">Desacoplar sem fragmentar</p>
       </div>
     </div>
-    <div class="arch-diagram">
+
+    <div class="arch-diagram reveal">
+      <div class="arch-legend" aria-label="Legenda">
+        <span><i style="background:var(--green)"></i>Novo / habilitador-chave</span>
+        <span><i style="background:var(--blue-dim);border:1px solid var(--blue)"></i>Plataforma CRM</span>
+        <span><i style="background:var(--gold-dim);border:1px solid var(--gold)"></i>Dados</span>
+        <span><i style="background:rgba(158,168,160,.1);border:1px solid var(--silver)"></i>Existente</span>
+        <span><i style="border:1px dashed var(--muted)"></i>Futuro</span>
+      </div>
       <div class="arch-layers">
         <div class="arch-layer">
           <div class="arch-layer-label">Experiência</div>
           <div class="arch-layer-content">
-            <span class="arch-chip hl">Loja no Posto</span>
+            <span class="arch-chip ops">Loja no Posto</span>
             <span class="arch-chip new">ZBRM Corporate</span>
             <span class="arch-chip new">ZBRM Aeroporto</span>
             <span class="arch-chip new">ZBRM Shopping</span>
-            <span class="arch-chip new">Marketplace (futuro)</span>
+            <span class="arch-chip new">Minha Quitandinha</span>
+            <span class="arch-chip neutral">Marketplace (futuro)</span>
           </div>
         </div>
-        <div class="arch-connector-line"></div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Acesso</div>
+          <div class="arch-layer-content">
+            <span class="arch-chip new">Portal do Franqueado (Experience Cloud)</span>
+            <span class="arch-chip new">SSO — Salesforce Identity</span>
+            <span class="arch-chip ops">Mania de Abastecer (mantido)</span>
+            <span class="arch-chip ops">App Premmia</span>
+          </div>
+        </div>
         <div class="arch-layer">
           <div class="arch-layer-label">Plataforma CRM</div>
           <div class="arch-layer-content">
-            <span class="arch-chip crm">CG Cloud — PDV & Execução</span>
-            <span class="arch-chip crm">Sales Cloud — Franqueados</span>
-            <span class="arch-chip crm">Premmia — Consumidor</span>
+            <span class="arch-chip hl">CG Cloud — PDV, Trade &amp; Sell-out</span>
+            <span class="arch-chip crm">Sales Cloud — Franqueados &amp; Contratos</span>
+            <span class="arch-chip crm">Loyalty — Mania+ &amp; Desafio</span>
           </div>
         </div>
-        <div class="arch-connector-line"></div>
         <div class="arch-layer">
           <div class="arch-layer-label">Dados</div>
           <div class="arch-layer-content">
-            <span class="arch-chip data">Data 360 — Visão do Posto</span>
+            <span class="arch-chip hl">Data 360 — Visão do Posto</span>
             <span class="arch-chip data">Sell-out BR Mania</span>
             <span class="arch-chip data">Comportamento Premmia</span>
-            <span class="arch-chip data">Índice Pista–Loja</span>
+            <span class="arch-chip new">Índice Pista–Loja</span>
+            <span class="arch-chip crm">Tableau Next</span>
           </div>
         </div>
-        <div class="arch-connector-line"></div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Integração</div>
+          <div class="arch-layer-content">
+            <span class="arch-chip hl">MuleSoft — camada única</span>
+            <span class="arch-chip new">Ingestão de cupons · 12 software houses</span>
+            <span class="arch-chip ops">ServiceNow (chamados)</span>
+            <span class="arch-chip ops">Portal da Vidi (transição)</span>
+          </div>
+        </div>
         <div class="arch-layer">
           <div class="arch-layer-label">Operações</div>
           <div class="arch-layer-content">
             <span class="arch-chip ops">ERP BR Mania (independente)</span>
-            <span class="arch-chip ops">Gestão de Contratos</span>
-            <span class="arch-chip ops">Rebates de Parceiros</span>
-            <span class="arch-chip neutral">SAP Vibra (posto)</span>
+            <span class="arch-chip new">Gestão de Contratos</span>
+            <span class="arch-chip new">Rebates de Parceiros</span>
+            <span class="arch-chip ops">SAP Vibra (posto)</span>
           </div>
         </div>
-        <div class="arch-connector-line"></div>
         <div class="arch-layer">
           <div class="arch-layer-label">Financeiro</div>
           <div class="arch-layer-content">
             <span class="arch-chip new">Segmento Financeiro ZBRM</span>
             <span class="arch-chip new">Split de Pagamento (Reforma Tributária)</span>
-            <span class="arch-chip neutral">Modelo Revendedor Posto (existente)</span>
+            <span class="arch-chip ops">Modelo Revendedor Posto (existente)</span>
           </div>
         </div>
       </div>
-      <div class="arch-note">
-        <strong>Princípio de design:</strong> a arquitetura deve dar independência à BR Mania para escalar novos modelos (ZBRM) sem depender do código SAP do posto — mas garantir sinergia de dados com o ecossistema Vibra via Data 360 e Premmia.
-      </div>
+      <div class="arch-note"><strong>Princípio de design:</strong> a arquitetura deve dar independência à BR Mania para escalar novos modelos (ZBRM, Minha Quitandinha) sem depender do código SAP do posto, e deixá-la pronta para uma possível JV. A sinergia com o ecossistema Vibra fica garantida via Data 360, Premmia e MuleSoft: dá para separar sem reconstruir.</div>
     </div>
   </section>
 
-  <!-- ROADMAP -->
-  <section class="section" id="roadmap">
-    <div class="section-header">
-      <span class="section-num">06</span>
+  <!-- 06 ROADMAP -->
+  <section class="section" id="roadmap" data-title="Roadmap">
+    <div class="section-header reveal">
+      <span class="section-num">07</span>
       <div>
         <h2 class="section-title">Fases de entrega</h2>
         <p class="section-subtitle">Da fundação à escala</p>
       </div>
     </div>
-    <div class="roadmap">
-      <div class="roadmap-phase">
-        <div class="roadmap-phase-header">
-          <div class="roadmap-phase-label">FASE 1</div>
-          <div class="roadmap-phase-title p1">Fundação</div>
-          <div class="roadmap-phase-period">Q1 2027 — Arquitetura & Dados</div>
+
+    <div class="reveal">
+      <div class="timeline" aria-hidden="true"><div class="tl-bar p1"></div><div class="tl-bar p2"></div><div class="tl-bar p3"></div></div>
+      <div class="tl-labels" aria-hidden="true"><span>Q1 2027</span><span>Q2 – Q3 2027</span><span>Q4 2027 →</span></div>
+
+      <div class="roadmap">
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <span class="roadmap-phase-label">FASE 1</span>
+            <span class="roadmap-phase-title p1">Fundação</span>
+            <span class="roadmap-phase-period">Q1 2027 — Arquitetura &amp; Dados</span>
+          </div>
+          <ul class="roadmap-items">
+            <li class="roadmap-item">Expurgo e mapeamento da planilha de códigos SAP</li>
+            <li class="roadmap-item">Criação da entidade ZBRM independente no ERP</li>
+            <li class="roadmap-item">Visão 360 do Posto no Data 360</li>
+            <li class="roadmap-item">Novo segmento financeiro para franqueados ZBRM</li>
+            <li class="roadmap-item">Checklist e processo de inauguração estruturado</li>
+            <li class="roadmap-item">Chamados por posto com visão dedicada BR Mania (ServiceNow integrado)</li>
+            <li class="roadmap-item">Modelo posto–loja–franqueado com histórico de sucessão</li>
+            <li class="roadmap-item">Migração Monday → Sales Cloud (leads + implantação)</li>
+            <li class="roadmap-item">Portal do Franqueado + SSO (Identity)</li>
+            <li class="roadmap-item">Ingestão de cupons das 12 software houses</li>
+          </ul>
+          <div class="roadmap-exit"><div class="roadmap-exit-box"><span>MARCO DE SAÍDA</span>Entidade ZBRM criada, posto–franquia modelado e Visão 360 do Posto disponível no Data 360</div></div>
         </div>
-        <ul class="roadmap-items">
-          <li class="roadmap-item">Expurgo e mapeamento da planilha de códigos SAP</li>
-          <li class="roadmap-item">Criação da entidade ZBRM independente no ERP</li>
-          <li class="roadmap-item">Visão 360 do Posto no Data 360</li>
-          <li class="roadmap-item">Novo segmento financeiro para franqueados ZBRM</li>
-          <li class="roadmap-item">Checklist e processo de inauguração estruturado</li>
-          <li class="roadmap-item">Chamados por posto com visão dedicada BR Mania</li>
-        </ul>
-      </div>
-      <div class="roadmap-phase">
-        <div class="roadmap-phase-header">
-          <div class="roadmap-phase-label">FASE 2</div>
-          <div class="roadmap-phase-title p2">Inteligência</div>
-          <div class="roadmap-phase-period">Q2–Q3 2027 — CG Cloud & Ofertas</div>
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <span class="roadmap-phase-label">FASE 2</span>
+            <span class="roadmap-phase-title p2">Inteligência</span>
+            <span class="roadmap-phase-period">Q2–Q3 2027 — CG Cloud &amp; Ofertas</span>
+          </div>
+          <ul class="roadmap-items">
+            <li class="roadmap-item">CG Cloud integrado ao Sales Cloud e Data 360</li>
+            <li class="roadmap-item">Visit Execution + Image Recognition (substitui Checklist Fácil)</li>
+            <li class="roadmap-item">Planograma e sortimento no CG Cloud (substitui GEMP)</li>
+            <li class="roadmap-item">Preço praticado para o trade marketing</li>
+            <li class="roadmap-item">Acelera+ por loja, sem depender do posto</li>
+            <li class="roadmap-item">Oferta contextual abasteceu + loja (Premmia)</li>
+            <li class="roadmap-item">Mensuração do índice pista–loja por posto</li>
+            <li class="roadmap-item">Campanhas regionais e por posto habilitadas</li>
+            <li class="roadmap-item">Gestão de rebates de parceiros</li>
+            <li class="roadmap-item">Notificação proativa de contratos vencendo</li>
+          </ul>
+          <div class="roadmap-exit"><div class="roadmap-exit-box"><span>MARCO DE SAÍDA</span>Índice pista–loja mensurado, primeira campanha regional no ar e visitas 100% no CG Cloud</div></div>
         </div>
-        <ul class="roadmap-items">
-          <li class="roadmap-item">CG Cloud integrado ao Sales Cloud e Data 360</li>
-          <li class="roadmap-item">Oferta contextual abasteceu + loja (Premmia)</li>
-          <li class="roadmap-item">Mensuração do índice pista–loja por posto</li>
-          <li class="roadmap-item">Campanhas regionais e por posto habilitadas</li>
-          <li class="roadmap-item">Gestão de rebates de parceiros</li>
-          <li class="roadmap-item">Notificação proativa de contratos vencendo</li>
-        </ul>
-      </div>
-      <div class="roadmap-phase">
-        <div class="roadmap-phase-header">
-          <div class="roadmap-phase-label">FASE 3</div>
-          <div class="roadmap-phase-title p3">Escala</div>
-          <div class="roadmap-phase-period">Q4 2027+ — Crescimento ZBRM</div>
+        <div class="roadmap-phase">
+          <div class="roadmap-phase-header">
+            <span class="roadmap-phase-label">FASE 3</span>
+            <span class="roadmap-phase-title p3">Escala</span>
+            <span class="roadmap-phase-period">Q4 2027+ — Crescimento ZBRM</span>
+          </div>
+          <ul class="roadmap-items">
+            <li class="roadmap-item">Pedido sugerido e recompra automática</li>
+            <li class="roadmap-item">Split de pagamento para reforma tributária</li>
+            <li class="roadmap-item">Expansão lojas próprias: corporate, aeroporto, shopping</li>
+            <li class="roadmap-item">Cross-selling baseado em perfil Premmia</li>
+            <li class="roadmap-item">Avaliação de marketplace com dados reais</li>
+            <li class="roadmap-item">Onboarding estruturado até recompra automática</li>
+            <li class="roadmap-item">Minha Quitandinha em escala</li>
+            <li class="roadmap-item">Mania+ e Desafio no Loyalty; PowerBI consolidado no Tableau</li>
+          </ul>
+          <div class="roadmap-exit"><div class="roadmap-exit-box"><span>MARCO DE SAÍDA</span>Lojas ZBRM operando fora do posto com recompra automática</div></div>
         </div>
-        <ul class="roadmap-items">
-          <li class="roadmap-item">Pedido sugerido e recompra automática</li>
-          <li class="roadmap-item">Split de pagamento para reforma tributária</li>
-          <li class="roadmap-item">Expansão lojas próprias: corporate, aeroporto, shopping</li>
-          <li class="roadmap-item">Cross-selling baseado em perfil Premmia</li>
-          <li class="roadmap-item">Avaliação de marketplace com dados reais</li>
-          <li class="roadmap-item">Onboarding estruturado até recompra automática</li>
-        </ul>
       </div>
+      <p class="roadmap-dep"><strong>Dependência crítica:</strong> a Fase 2 só começa com a Visão 360 do Posto ativa no Data 360 — sem ela, não há oferta contextual nem índice pista–loja.</p>
     </div>
   </section>
 
-  <!-- PRÓXIMAS AÇÕES -->
-  <section class="section" id="proximos-passos">
-    <div class="section-header">
-      <span class="section-num">07</span>
+  <!-- 07 PRÓXIMOS PASSOS -->
+  <section class="section" id="proximos-passos" data-title="Próximos passos">
+    <div class="section-header reveal">
+      <span class="section-num">08</span>
       <div>
         <h2 class="section-title">O que acontece agora</h2>
         <p class="section-subtitle">Próximas reuniões e demandas em aberto</p>
       </div>
     </div>
-    <div class="actions-grid">
+
+    <div class="actions-progress reveal">
+      <span id="apText">0 de 0 concluídas</span>
+      <div class="ap-track"><div class="ap-fill" id="apFill"></div></div>
+    </div>
+
+    <div class="actions-grid reveal">
+      <div class="action-card is-done" data-action style="grid-column: span 2">
+        <div class="action-header"><div class="action-icon green" aria-hidden="true">✅</div><div class="action-title">Detalhamento técnico das ferramentas BR Mania</div></div>
+        <p class="action-body">Jornada Premmia, integração de revendedores, Mania de Abastecer, Minha Quitandinha, acessos, execução e inventário de sistemas. Os resultados estão incorporados às seções 01, 03 e 04.</p>
+        <div class="action-foot"><span class="action-meta">REALIZADA · 15/OUT/2026</span><label class="action-check"><input type="checkbox" checked> Concluído</label></div>
+      </div>
+
       <div class="action-card primary">
-        <div>
+        <div class="action-sub" data-action>
           <div class="action-header">
-            <div class="action-icon green">🏗️</div>
+            <div class="action-icon green" aria-hidden="true">🏗️</div>
             <div class="action-title">Reunião de Arquitetura</div>
           </div>
-          <p class="action-body" style="margin-top:10px">Definir a arquitetura de independência da BR Mania: como criar a entidade ZBRM sem depender do código SAP do posto, mantendo sinergia com o ecossistema Vibra. Inclui ERP, segmento financeiro e modelo de dados.</p>
-          <div class="action-meta" style="margin-top:14px">PRÓXIMA REUNIÃO · AGENDA EM ABERTO</div>
-        </div>
-        <div>
-          <div class="action-header">
-            <div class="action-icon blue">☁️</div>
-            <div class="action-title">Reunião CG Cloud</div>
+          <p class="action-body">Definir a arquitetura de independência da BR Mania, pronta para uma JV: a entidade ZBRM sem código SAP do posto, com sinergia com o ecossistema Vibra.</p>
+          <ul class="action-agenda">
+            <li>Modelo posto–loja–franqueado e sucessão</li>
+            <li>Integração ERP BR Mania ↔ SAP Vibra (MuleSoft)</li>
+            <li>Fim do lote de 24h de revendedores</li>
+            <li>SSO via Salesforce Identity para sistemas externos</li>
+            <li>Segmento financeiro e split de pagamento</li>
+          </ul>
+          <div class="action-foot">
+            <span class="action-meta">PRÓXIMA REUNIÃO · AGENDA EM ABERTO</span>
+            <label class="action-check"><input type="checkbox"> Concluído</label>
           </div>
-          <p class="action-body" style="margin-top:10px">Explorar todo o potencial do Consumer Goods Cloud (release 246): execução no PDV, pedido sugerido, gestão de rebates e campanhas regionais. Conectar ao Sales Cloud e Data 360.</p>
-          <div class="action-meta" style="margin-top:14px">PRÓXIMA REUNIÃO · AGENDA EM ABERTO</div>
+        </div>
+        <div class="action-sub" data-action>
+          <div class="action-header">
+            <div class="action-icon blue" aria-hidden="true">☁️</div>
+            <div class="action-title">Reunião CG Cloud para BR Mania</div>
+          </div>
+          <p class="action-body">Explorar todo o potencial do Consumer Goods Cloud (release 246) como núcleo da execução, com demo nos casos reais da BR Mania.</p>
+          <ul class="action-agenda">
+            <li>Visit Execution + Image Recognition (vs. Vidi e Checklist Fácil)</li>
+            <li>Planograma e sortimento (vs. GEMP)</li>
+            <li>Preço praticado, rebates e Acelera+ por loja</li>
+            <li>Campanha regional: cuca nos postos do RS</li>
+            <li>Pedido sugerido → trigger no Mania de Abastecer</li>
+          </ul>
+          <div class="action-foot">
+            <span class="action-meta">PRÓXIMA REUNIÃO · AGENDA EM ABERTO</span>
+            <label class="action-check"><input type="checkbox"> Concluído</label>
+          </div>
         </div>
       </div>
-      <div class="action-card">
-        <div class="action-header"><div class="action-icon gold">📋</div><div class="action-title">Expurgo da planilha de códigos SAP</div></div>
-        <p class="action-body">Levantar todos os códigos de loja existentes por categoria. Ponto de partida para criar a entidade ZBRM independente.</p>
-        <div class="action-meta">EV · DEMANDA TÉCNICA</div>
+
+      <div class="action-card" data-action>
+        <div class="action-header"><div class="action-icon gold" aria-hidden="true">📋</div><div class="action-title">Expurgo da planilha de códigos SAP</div></div>
+        <p class="action-body">Levantar todos os códigos de loja por categoria (posto, ZBRM, casos especiais como a loja do prédio da Vibra). Ponto de partida para a entidade ZBRM.</p>
+        <div class="action-foot"><span class="action-meta">EV · DEMANDA TÉCNICA</span><label class="action-check"><input type="checkbox"> Concluído</label></div>
       </div>
-      <div class="action-card">
-        <div class="action-header"><div class="action-icon green">📊</div><div class="action-title">Consolidação dos chamados por posto</div></div>
-        <p class="action-body">Mapear chamados abertos com categorias, status e ações necessárias para uma visão dedicada à BR Mania.</p>
-        <div class="action-meta">LT = EV · VISÃO UNIFICADA</div>
+      <div class="action-card" data-action>
+        <div class="action-header"><div class="action-icon green" aria-hidden="true">📊</div><div class="action-title">Consolidação dos chamados por posto</div></div>
+        <p class="action-body">Mapear as categorias e os status de chamados no ServiceNow, e o que cada área precisa fazer para ter uma visão dedicada à BR Mania.</p>
+        <div class="action-foot"><span class="action-meta">LT = EV · VISÃO UNIFICADA</span><label class="action-check"><input type="checkbox"> Concluído</label></div>
       </div>
-      <div class="action-card">
-        <div class="action-header"><div class="action-icon gold">💰</div><div class="action-title">Preparação financeira para reforma tributária</div></div>
-        <p class="action-body">Estruturar split de pagamento e criar o segmento financeiro adequado para franqueados ZBRM antes da reforma entrar em vigor.</p>
-        <div class="action-meta">FINANCEIRO · COMPLIANCE</div>
+      <div class="action-card" data-action>
+        <div class="action-header"><div class="action-icon blue" aria-hidden="true">🔌</div><div class="action-title">Inventário de integrações de PDV</div></div>
+        <p class="action-body">Levantar formato, frequência e volume dos cupons fiscais das 12 software houses para desenhar a ingestão near real time.</p>
+        <div class="action-foot"><span class="action-meta">TI · INTEGRAÇÃO</span><label class="action-check"><input type="checkbox"> Concluído</label></div>
+      </div>
+      <div class="action-card" data-action>
+        <div class="action-header"><div class="action-icon gold" aria-hidden="true">🗂️</div><div class="action-title">Validar o mapa de sistemas com os donos</div></div>
+        <p class="action-body">Confirmar com cada área responsável a ação proposta (substituir, consolidar, integrar ou evoluir) e os usos que não estão no inventário.</p>
+        <div class="action-foot"><span class="action-meta">TODAS AS ÁREAS · GOVERNANÇA</span><label class="action-check"><input type="checkbox"> Concluído</label></div>
+      </div>
+      <div class="action-card" data-action>
+        <div class="action-header"><div class="action-icon green" aria-hidden="true">🏘️</div><div class="action-title">Escopo do piloto Minha Quitandinha</div></div>
+        <p class="action-body">Definir o cadastro, o login e o fluxo de compra para lojas de condomínio sem código SAP — primeiro caso de uso da conta independente.</p>
+        <div class="action-foot"><span class="action-meta">NEGÓCIO · PILOTO</span><label class="action-check"><input type="checkbox"> Concluído</label></div>
+      </div>
+      <div class="action-card" data-action>
+        <div class="action-header"><div class="action-icon gold" aria-hidden="true">💰</div><div class="action-title">Preparação financeira para reforma tributária</div></div>
+        <p class="action-body">Estruturar o split de pagamento e o segmento financeiro adequado para franqueados ZBRM antes da reforma entrar em vigor.</p>
+        <div class="action-foot"><span class="action-meta">FINANCEIRO · COMPLIANCE</span><label class="action-check"><input type="checkbox"> Concluído</label></div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  </main>
+
   <footer class="site-footer">
-    <div class="footer-text"><span>BR Mania</span> — Projeto Transformação · Vibra Energia · Discovery 01/Out/2026</div>
+    <div class="footer-text"><span>BR Mania</span> — Projeto Transformação · Vibra Energia · Discovery 01/Out &amp; 15/Out/2026</div>
     <div class="footer-tags">
       <span class="footer-tag">CG Cloud</span>
       <span class="footer-tag">Data 360</span>
       <span class="footer-tag">Sales Cloud</span>
       <span class="footer-tag">Premmia</span>
+      <span class="footer-tag">Experience Cloud</span>
+      <span class="footer-tag">MuleSoft</span>
       <span class="footer-tag">ZBRM</span>
     </div>
   </footer>
+</div>
 
-</div><!-- /main -->
+<button class="back-top" id="backTop" aria-label="Voltar ao topo">↑</button>
 
 <script>
-  // Tab switching for Salesforce section
-  function showSF(panelId, tab) {
-    document.querySelectorAll('.sf-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.sf-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(panelId).classList.add('active');
-    tab.classList.add('active');
-  }
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Sidebar active link
-  function setActive(el) {
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    el.classList.add('active');
-    // Close on mobile
-    if (window.innerWidth <= 900) {
-      document.querySelector('.sidebar').classList.remove('open');
-    }
-  }
+  /* ── Sidebar mobile ── */
+  const sidebar = $('#sidebar'), toggle = $('#sidebarToggle'), overlay = $('#sidebarOverlay');
+  const setMenu = open => {
+    sidebar.classList.toggle('open', open);
+    overlay.classList.toggle('show', open);
+    toggle.setAttribute('aria-expanded', open);
+  };
+  toggle.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+  overlay.addEventListener('click', () => setMenu(false));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  $$('.sidebar-link').forEach(l => l.addEventListener('click', () => { if (innerWidth <= 900) setMenu(false); }));
 
-  // Update active link on scroll
-  const sections = ['hero','dores','oportunidades','salesforce','visao360','arquitetura','roadmap','proximos-passos'];
-  const links = document.querySelectorAll('.sidebar-link');
-
-  window.addEventListener('scroll', () => {
-    let current = 'hero';
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - 80) current = id;
+  /* ── Active section (IntersectionObserver) ── */
+  const links = $$('.sidebar-link');
+  const current = $('#topnavCurrent');
+  const sections = $$('[data-title]');
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      const id = en.target.id;
+      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      current.textContent = en.target.dataset.title;
     });
-    links.forEach(l => {
-      l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => spy.observe(s));
+
+  /* ── Progress + back to top ── */
+  const prog = $('#progress'), back = $('#backTop');
+  const onScroll = () => {
+    const h = document.documentElement;
+    const p = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+    prog.style.width = (p * 100) + '%';
+    back.classList.toggle('show', h.scrollTop > 600);
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  back.addEventListener('click', () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
+
+  /* ── Reveal on scroll ── */
+  const rev = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); rev.unobserve(e.target); }
+  }), { threshold: 0.08 });
+  $$('.reveal').forEach(el => rev.observe(el));
+
+  /* ── Counters ── */
+  if (!reduce) $$('[data-count]').forEach(el => {
+    const target = +el.dataset.count, t0 = performance.now(), dur = 900;
+    const step = t => {
+      const k = Math.min(1, (t - t0) / dur), v = Math.round(target * (1 - Math.pow(1 - k, 3)));
+      el.textContent = v; if (k < 1) requestAnimationFrame(step);
+    };
+    el.textContent = 0; requestAnimationFrame(step);
+  });
+
+  /* ── Filtros: travas ── */
+  const setPressed = (group, btn) => $$(group).forEach(b => b.setAttribute('aria-pressed', b === btn));
+  $$('[data-filter]').forEach(btn => btn.addEventListener('click', () => {
+    setPressed('[data-filter]', btn);
+    const f = btn.dataset.filter;
+    $$('.dor-cat').forEach(c => c.hidden = f !== 'all' && c.dataset.cat !== f);
+  }));
+
+  /* ── Filtros: oportunidades ── */
+  $$('[data-ofilter]').forEach(btn => btn.addEventListener('click', () => {
+    setPressed('[data-ofilter]', btn);
+    const f = btn.dataset.ofilter;
+    $$('.oport-row').forEach(r => r.hidden = f !== 'all' && r.dataset.impact !== f);
+  }));
+
+  /* ── Filtro: sistemas ── */
+  $$('[data-sys]').forEach(btn => btn.addEventListener('click', () => {
+    const on = btn.getAttribute('aria-pressed') !== 'true';
+    $$('[data-sys]').forEach(b => b.setAttribute('aria-pressed', on && b === btn));
+    $$('.sys-table tbody tr').forEach(r => r.hidden = on && r.dataset.act !== btn.dataset.sys);
+  }));
+
+  /* ── Tabs Salesforce (ARIA + teclado) ── */
+  const tabs = $$('.sf-tab');
+  const showTab = (tab, focus) => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      $('#' + t.getAttribute('aria-controls')).hidden = !on;
     });
-  }, { passive: true });
+    if (focus) tab.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => showTab(t));
+    t.addEventListener('keydown', e => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { e.preventDefault(); showTab(tabs[(i + d + tabs.length) % tabs.length], true); }
+    });
+  });
+
+  /* ── Trava → solução ── */
+  $$('.dor-link').forEach(b => b.addEventListener('click', () => {
+    showTab($('#tab-' + b.dataset.goto));
+    const row = $('#' + b.dataset.row);
+    row.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 1600);
+  }));
+
+  /* ── Fluxo Visão 360 ── */
+  const details = [
+    '<strong>Gatilho.</strong> O cliente se identifica no Premmia ao abastecer. O evento chega ao Data 360 em tempo quase real com posto, horário e combustível.',
+    '<strong>Visão 360 do Posto.</strong> Data 360 une dados de pista (Premmia), loja (ERP BR Mania) e operação (SAP Vibra) em um único perfil de posto.',
+    '<strong>Perfil Premmia.</strong> Identity Resolution liga o CPF ao histórico de compra na loja: preferências, frequência, ticket e horário.',
+    '<strong>Resultado.</strong> Oferta combinada (ex.: café + pão de queijo após abastecer pela manhã) entregue no app Premmia ou no caixa.',
+    '<strong>Medição.</strong> A conversão em ticket BR Mania alimenta o índice pista–loja por posto, fechando o ciclo de aprendizado.'
+  ];
+  const flow = $$('.v360-flow-item'), det = $('#v360Detail');
+  const setStep = i => {
+    flow.forEach((f, j) => f.classList.toggle('active', j === i));
+    det.innerHTML = details[i];
+  };
+  flow.forEach((f, i) => f.addEventListener('click', () => setStep(i)));
+  setStep(0);
+
+  /* ── Simulador ── */
+  const nf = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+  const cf = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+  const sim = () => {
+    const a = Math.max(0, +$('#simAbast').value || 0);
+    const l = Math.max(0, +$('#simLoja').value || 0);
+    const t = Math.max(0, +$('#simTicket').value || 0);
+    const g = Math.max(0, +$('#simGain').value || 0);
+    const idx = a ? Math.min(100, l / a * 100) : 0;
+    const nidx = Math.min(100, idx + g);
+    const rev = a * (nidx - idx) / 100 * t;
+    $('#outIdx').textContent = nf.format(idx) + '%';
+    $('#outNew').textContent = nf.format(nidx) + '%';
+    $('#outRev').textContent = cf.format(rev);
+  };
+  $$('.sim input').forEach(i => i.addEventListener('input', sim)); sim();
+
+  /* ── Checklist de próximos passos (em memória) ── */
+  const actions = $$('[data-action]');
+  const upd = () => {
+    const done = actions.filter(a => $('input', a).checked).length;
+    $('#apText').textContent = `${done} de ${actions.length} concluídas`;
+    $('#apFill').style.width = (done / actions.length * 100) + '%';
+    actions.forEach(a => a.classList.toggle('is-done', $('input', a).checked));
+  };
+  actions.forEach(a => $('input', a).addEventListener('change', upd)); upd();
+})();
 </script>
 </body>
 </html>
